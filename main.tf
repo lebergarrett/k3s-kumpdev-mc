@@ -4,7 +4,7 @@ provider "kubernetes" {
 
 resource "kubernetes_namespace" "_" {
   metadata {
-    name = "mc-kumpdev"
+    name = var.server_name
   }
 }
 
@@ -33,6 +33,13 @@ resource "kubernetes_deployment" "vanilla" {
           port {
             container_port = 25565
           }
+          dynamic "env" {
+            for_each = var.vanilla_env_vars
+            content {
+              name  = env.key
+              value = env.value
+            }
+          }
         }
       }
     }
@@ -50,7 +57,7 @@ resource "kubernetes_service" "vanilla" {
     }
     type = "NodePort"
     port {
-      node_port   = 25569
+      node_port   = 31101
       port        = 25565
       target_port = 25565
     }
