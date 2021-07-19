@@ -24,6 +24,16 @@ variable "paper_config" {
   type        = map(map(string))
 }
 
+variable "proxy_motd" {
+  description = "Message of the day for the waterfall proxy (What clients see on the server browser)"
+  type        = string
+}
+
+variable "proxy_priority_server" {
+  description = "Default server for player to login to on first join"
+  type        = string
+}
+
 variable "server_name" {
   description = "Name of server/network, used in various locations"
   type        = string

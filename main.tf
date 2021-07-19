@@ -19,6 +19,7 @@ resource "kubernetes_deployment" "paper_servers" {
       metadata {
         labels = {
           app = "minecraft"
+          id  = each.key
         }
       }
       spec {
@@ -47,21 +48,26 @@ resource "kubernetes_deployment" "paper_servers" {
             name  = "OPS"
             value = var.mc_ops
           }
-          volume_mount {
-            mount_path = "/plugins"
-            sub_path   = "plugins/"
-            name       = var.server_name
+          resources {
+            requests = {
+              cpu    = "1"
+              memory = var.paper_config[each.key]["MEMORY"]
+            }
           }
+          # volume_mount {
+          #   mount_path = "/plugins"
+          #   sub_path   = "plugins/"
+          #   name       = each.key
+          # }
           volume_mount {
             mount_path = "/data"
-            sub_path   = "data/${each.key}"
-            name       = var.server_name
+            name       = each.key
           }
         }
         volume {
-          name = var.server_name
+          name = each.key
           persistent_volume_claim {
-            claim_name = var.server_name
+            claim_name = each.key
           }
         }
       }
@@ -86,6 +92,7 @@ resource "kubernetes_deployment" "fabric_servers" {
       metadata {
         labels = {
           app = "minecraft"
+          id  = each.key
         }
       }
       spec {
@@ -114,25 +121,62 @@ resource "kubernetes_deployment" "fabric_servers" {
             name  = "OPS"
             value = var.mc_ops
           }
-          volume_mount {
-            mount_path = "/mods"
-            sub_path   = "fabric-mods/"
-            name       = var.server_name
+          resources {
+            requests = {
+              cpu    = "1"
+              memory = var.fabric_config[each.key]["MEMORY"]
+            }
           }
+          # volume_mount {
+          #   mount_path = "/mods"
+          #   sub_path   = "fabric-mods/"
+          #   name       = each.key
+          # }
           volume_mount {
             mount_path = "/data"
-            sub_path   = "data/${each.key}"
-            name       = var.server_name
+            name       = each.key
           }
         }
         volume {
-          name = var.server_name
+          name = each.key
           persistent_volume_claim {
-            claim_name = var.server_name
+            claim_name = each.key
           }
         }
       }
     }
+  }
+}
+
+resource "kubernetes_service" "mc_servers" {
+  for_each = merge(var.fabric_config, var.paper_config)
+  metadata {
+    name      = each.key
+    namespace = var.server_name
+  }
+  spec {
+    selector = {
+      id = each.key
+    }
+    port {
+      port        = 25565
+      target_port = 25565
+    }
+  }
+}
+
+resource "kubernetes_config_map" "waterfall_proxy" {
+  metadata {
+    name      = "waterfall-proxy-configmap"
+    namespace = var.server_name
+  }
+  data = {
+    "config.yml" = templatefile("${path.root}/templates/waterfall-config.tpl", {
+      mc_ops                = var.mc_ops
+      proxy_motd            = var.proxy_motd
+      proxy_priority_server = var.proxy_priority_server
+      servers               = concat([for server, config in var.paper_config : server], [for server, config in var.fabric_config : server])
+    })
   }
 }
 
@@ -165,6 +209,16 @@ resource "kubernetes_deployment" "waterfall_proxy" {
             name  = "TYPE"
             value = "WATERFALL"
           }
+          volume_mount {
+            name       = "waterfall-proxy-volume"
+            mount_path = "/config"
+          }
+        }
+        volume {
+          name = "waterfall-proxy-volume"
+          config_map {
+            name = "waterfall-proxy-configmap"
+          }
         }
       }
     }
@@ -178,7 +232,7 @@ resource "kubernetes_service" "waterfall_proxy" {
   }
   spec {
     selector = {
-      app = kubernetes_deployment.waterfall_proxy.spec.0.template.0.metadata.0.labels.app
+      app = "waterfall-proxy"
     }
     type = "LoadBalancer"
     port {
