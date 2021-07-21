@@ -25,7 +25,7 @@ resource "kubernetes_deployment" "paper_servers" {
       spec {
         container {
           name  = each.key
-          image = "itzg/minecraft-server"
+          image = "imkumpy/paper-mc:main"
           port {
             container_port = 25565
           }
@@ -54,11 +54,6 @@ resource "kubernetes_deployment" "paper_servers" {
               memory = var.paper_config[each.key]["MEMORY"]
             }
           }
-          # volume_mount {
-          #   mount_path = "/plugins"
-          #   sub_path   = "plugins/"
-          #   name       = each.key
-          # }
           volume_mount {
             mount_path = "/data"
             name       = each.key
@@ -98,7 +93,7 @@ resource "kubernetes_deployment" "fabric_servers" {
       spec {
         container {
           name  = each.key
-          image = "itzg/minecraft-server"
+          image = "imkumpy/fabric-mc:main"
           port {
             container_port = 25565
           }
@@ -127,11 +122,6 @@ resource "kubernetes_deployment" "fabric_servers" {
               memory = var.fabric_config[each.key]["MEMORY"]
             }
           }
-          # volume_mount {
-          #   mount_path = "/mods"
-          #   sub_path   = "fabric-mods/"
-          #   name       = each.key
-          # }
           volume_mount {
             mount_path = "/data"
             name       = each.key
@@ -200,7 +190,7 @@ resource "kubernetes_deployment" "waterfall_proxy" {
       }
       spec {
         container {
-          image = "itzg/bungeecord"
+          image = "imkumpy/waterfall-mc:main"
           name  = "waterfall-proxy"
           port {
             container_port = 25577
