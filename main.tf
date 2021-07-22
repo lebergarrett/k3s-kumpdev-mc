@@ -298,15 +298,15 @@ resource "kubernetes_deployment" "luckperms_mariadb" {
             value = var.MARIADB_PASS
           }
           env {
-            name = "MYSQL_DATABASE"
+            name  = "MYSQL_DATABASE"
             value = "luckperms"
           }
           env {
-            name = "MYSQL_USER"
+            name  = "MYSQL_USER"
             value = var.MARIADB_USER
           }
           env {
-            name = "MYSQL_PASSWORD"
+            name  = "MYSQL_PASSWORD"
             value = var.MARIADB_PASS
           }
           volume_mount {
@@ -321,6 +321,22 @@ resource "kubernetes_deployment" "luckperms_mariadb" {
           }
         }
       }
+    }
+  }
+}
+
+resource "kubernetes_service" "luckperms_mariadb" {
+  metadata {
+    name      = "luckperms-mariadb"
+    namespace = var.server_name
+  }
+  spec {
+    selector = {
+      app = "luckperms-mariadb"
+    }
+    port {
+      port        = 3306
+      target_port = 3306
     }
   }
 }
