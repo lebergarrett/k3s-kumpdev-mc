@@ -66,11 +66,13 @@ resource "kubernetes_deployment" "paper_servers" {
           }
           volume_mount {
             name       = "paper-essentials-volume"
-            mount_path = "/data/plugins/Essentials"
+            sub_path = "config.yml"
+            mount_path = "/data/plugins/Essentials/config.yml"
           }
           volume_mount {
             name       = "paper-luckperms-volume"
-            mount_path = "/data/plugins/LuckPerms"
+            sub_path = "config.yml"
+            mount_path = "/data/plugins/LuckPerms/config.yml"
           }
         }
         volume {
@@ -161,7 +163,8 @@ resource "kubernetes_deployment" "fabric_servers" {
           }
           volume_mount {
             name       = "fabric-config-volume"
-            mount_path = "/config"
+            sub_path = "FabricProxy.toml"
+            mount_path = "/config/FabricProxy.toml"
           }
         }
         volume {
@@ -234,7 +237,8 @@ resource "kubernetes_deployment" "waterfall_proxy" {
           }
           volume_mount {
             name       = "waterfall-luckperms-volume"
-            mount_path = "/data/plugins/LuckPerms"
+            sub_path = "config.yml"
+            mount_path = "/data/plugins/LuckPerms/config.yml"
           }
         }
         volume {
