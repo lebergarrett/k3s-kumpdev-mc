@@ -267,3 +267,60 @@ resource "kubernetes_service" "waterfall_proxy" {
     }
   }
 }
+
+resource "kubernetes_deployment" "luckperms_mariadb" {
+  metadata {
+    name      = "luckperms-mariadb"
+    namespace = var.server_name
+  }
+  spec {
+    replicas = 1
+    selector {
+      match_labels = {
+        app = "luckperms-mariadb"
+      }
+    }
+    template {
+      metadata {
+        labels = {
+          app = "luckperms-mariadb"
+        }
+      }
+      spec {
+        container {
+          image = "mariadb"
+          name  = "luckperms-mariadb"
+          port {
+            container_port = 3306
+          }
+          env {
+            name  = "MYSQL_ROOT_PASSWORD"
+            value = var.MARIADB_PASS
+          }
+          env {
+            name = "MYSQL_DATABASE"
+            value = "luckperms"
+          }
+          env {
+            name = "MYSQL_USER"
+            value = var.MARIADB_USER
+          }
+          env {
+            name = "MYSQL_PASSWORD"
+            value = var.MARIADB_PASS
+          }
+          volume_mount {
+            mount_path = "/var/lib/mysql"
+            name       = "luckperms-mariadb-volume"
+          }
+        }
+        volume {
+          name = "luckperms-mariadb-volume"
+          persistent_volume_claim {
+            claim_name = "luckperms-mariadb"
+          }
+        }
+      }
+    }
+  }
+}
