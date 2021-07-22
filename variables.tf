@@ -38,3 +38,13 @@ variable "server_name" {
   description = "Name of server/network, used in various locations"
   type        = string
 }
+
+variable "MARIADB_USER" {
+  description = "User for database that stores luckperms info (paper servers)"
+  type = string
+}
+
+variable "MARIADB_PASS" {
+  description = "Password for database that stores luckperms info (paper servers)"
+  type = string
+}

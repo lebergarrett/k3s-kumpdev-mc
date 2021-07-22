@@ -2,6 +2,34 @@ provider "kubernetes" {
   config_path = "~/.kube/config"
 }
 
+
+resource "kubernetes_config_map" "paper_essentials" {
+  metadata {
+    name      = "paper-essentials-configmap"
+    namespace = var.server_name
+  }
+  data = {
+    "config.yml" = file("${path.root}/templates/essentials-config.tpl")
+  }
+}
+
+resource "kubernetes_config_map" "paper_luckperms" {
+  for_each = var.paper_config
+  metadata {
+    name      = "${each.key}-luckperms-configmap"
+    namespace = var.server_name
+  }
+  data = {
+    "config.yml" = templatefile("${path.root}/templates/luckperms-paper-config.tpl", {
+      server          = each.key
+      mariadb_address = "luckperms-mariadb"
+      mariadb_db      = "luckperms"
+      mariadb_user    = var.MARIADB_USER
+      mariadb_pass    = var.MARIADB_PASS
+    })
+  }
+}
+
 resource "kubernetes_deployment" "paper_servers" {
   for_each = var.paper_config
   metadata {
@@ -58,6 +86,26 @@ resource "kubernetes_deployment" "paper_servers" {
             mount_path = "/data"
             name       = each.key
           }
+          volume_mount {
+            name       = "paper-essentials-volume"
+            mount_path = "/data/plugins/Essentials"
+          }
+          volume_mount {
+            name       = "paper-luckperms-volume"
+            mount_path = "/data/plugins/LuckPerms"
+          }
+        }
+        volume {
+          name = "paper-luckperms-volume"
+          config_map {
+            name = "${each.key}-luckperms-configmap"
+          }
+        }
+        volume {
+          name = "paper-essentials-volume"
+          config_map {
+            name = "paper-essentials-configmap"
+          }
         }
         volume {
           name = each.key
@@ -67,6 +115,16 @@ resource "kubernetes_deployment" "paper_servers" {
         }
       }
     }
+  }
+}
+
+resource "kubernetes_config_map" "fabric_servers" {
+  metadata {
+    name      = "fabric-servers-configmap"
+    namespace = var.server_name
+  }
+  data = {
+    "FabricProxy.toml" = file("${path.root}/templates/FabricProxy.tpl")
   }
 }
 
@@ -126,6 +184,16 @@ resource "kubernetes_deployment" "fabric_servers" {
             mount_path = "/data"
             name       = each.key
           }
+          volume_mount {
+            name       = "fabric-config-volume"
+            mount_path = "/config"
+          }
+        }
+        volume {
+          name = "fabric-config-volume"
+          config_map {
+            name = "fabric-servers-configmap"
+          }
         }
         volume {
           name = each.key
@@ -170,6 +238,16 @@ resource "kubernetes_config_map" "waterfall_proxy" {
   }
 }
 
+resource "kubernetes_config_map" "waterfall_luckperms" {
+  metadata {
+    name      = "waterfall-luckperms-configmap"
+    namespace = var.server_name
+  }
+  data = {
+    "config.yml" = file("${path.root}/templates/luckperms-bungee-config.tpl")
+  }
+}
+
 resource "kubernetes_deployment" "waterfall_proxy" {
   metadata {
     name      = "waterfall-proxy"
@@ -202,6 +280,16 @@ resource "kubernetes_deployment" "waterfall_proxy" {
           volume_mount {
             name       = "waterfall-proxy-volume"
             mount_path = "/config"
+          }
+          volume_mount {
+            name       = "waterfall-luckperms-volume"
+            mount_path = "/data/plugins/LuckPerms"
+          }
+        }
+        volume {
+          name = "waterfall-luckperms-volume"
+          config_map {
+            name = "waterfall-luckperms-configmap"
           }
         }
         volume {
