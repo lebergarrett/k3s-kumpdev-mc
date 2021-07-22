@@ -26,6 +26,7 @@ resource "kubernetes_deployment" "paper_servers" {
         container {
           name  = each.key
           image = "imkumpy/paper-mc:main"
+          image_pull_policy = "Always"
           port {
             container_port = 25565
           }
@@ -125,6 +126,7 @@ resource "kubernetes_deployment" "fabric_servers" {
         container {
           name  = each.key
           image = "imkumpy/fabric-mc:main"
+          image_pull_policy = "Always"
           port {
             container_port = 25565
           }
@@ -218,6 +220,7 @@ resource "kubernetes_deployment" "waterfall_proxy" {
         container {
           image = "imkumpy/waterfall-mc:main"
           name  = "waterfall-proxy"
+          image_pull_policy = "Always"
           port {
             container_port = 25577
           }
