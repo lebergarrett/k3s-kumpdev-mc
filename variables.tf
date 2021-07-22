@@ -41,10 +41,10 @@ variable "server_name" {
 
 variable "MARIADB_USER" {
   description = "User for database that stores luckperms info (paper servers)"
-  type = string
+  type        = string
 }
 
 variable "MARIADB_PASS" {
   description = "Password for database that stores luckperms info (paper servers)"
-  type = string
+  type        = string
 }
