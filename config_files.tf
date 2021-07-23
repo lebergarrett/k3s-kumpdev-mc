@@ -59,13 +59,3 @@ resource "kubernetes_config_map" "waterfall_proxy" {
     })
   }
 }
-
-resource "kubernetes_config_map" "waterfall_luckperms" {
-  metadata {
-    name      = "waterfall-luckperms-configmap"
-    namespace = var.server_name
-  }
-  data = {
-    "config.yml" = file("${path.root}/templates/luckperms-bungee-config.tpl")
-  }
-}
