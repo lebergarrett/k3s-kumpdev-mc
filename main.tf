@@ -75,15 +75,9 @@ resource "kubernetes_service" "luckperms_mariadb" {
   }
 }
 
-resource "time_sleep" "wait_for_mariadb" {
-  depends_on = [kubernetes_deployment.luckperms_mariadb]
-
-  create_duration = "10s"
-}
-
 resource "kubernetes_deployment" "paper_servers" {
-  depends_on = [time_sleep.wait_for_mariadb]
-  for_each = var.paper_config
+  depends_on = [kubernetes_deployment.luckperms_mariadb]
+  for_each   = var.paper_config
   metadata {
     name      = each.key
     namespace = var.server_name
@@ -139,7 +133,7 @@ resource "kubernetes_deployment" "paper_servers" {
           }
           resources {
             requests = {
-              cpu    = "1"
+              cpu    = "0.5"
               memory = var.paper_config[each.key]["MEMORY"]
             }
           }
@@ -193,8 +187,8 @@ resource "kubernetes_deployment" "paper_servers" {
 }
 
 resource "kubernetes_deployment" "fabric_servers" {
-  depends_on = [time_sleep.wait_for_mariadb]
-  for_each = var.fabric_config
+  depends_on = [kubernetes_deployment.luckperms_mariadb]
+  for_each   = var.fabric_config
   metadata {
     name      = each.key
     namespace = var.server_name
@@ -282,8 +276,8 @@ resource "kubernetes_deployment" "fabric_servers" {
 }
 
 resource "kubernetes_service" "mc_servers" {
-  depends_on = [time_sleep.wait_for_mariadb]
-  for_each = merge(var.fabric_config, var.paper_config)
+  depends_on = [kubernetes_deployment.luckperms_mariadb]
+  for_each   = merge(var.fabric_config, var.paper_config)
   metadata {
     name      = each.key
     namespace = var.server_name
