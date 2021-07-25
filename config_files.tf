@@ -59,3 +59,13 @@ resource "kubernetes_config_map" "waterfall_proxy" {
     })
   }
 }
+
+resource "kubernetes_config_map" "ddns" {
+  metadata {
+    name      = "ddns-ddclient-configmap"
+    namespace = var.server_name
+  }
+  data = {
+    "ddclient.conf" = file("${path.root}/ddclient.conf")
+  }
+}

@@ -13,7 +13,7 @@ listeners:
   forced_hosts: null
   host: 0.0.0.0:25577
   max_players: 1
-  motd: ${proxy_motd}
+  motd: '${proxy_motd}'
   ping_passthrough: false
   priorities:
   - ${proxy_priority_server}
