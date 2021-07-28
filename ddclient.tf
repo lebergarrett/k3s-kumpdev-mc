@@ -18,8 +18,8 @@ resource "kubernetes_deployment" "ddns" {
       }
       spec {
         container {
-          image             = "linuxserver/ddclient"
-          name              = "ddns-ddclient"
+          image = "linuxserver/ddclient"
+          name  = "ddns-ddclient"
           env {
             name  = "PUID"
             value = "1000"

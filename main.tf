@@ -104,6 +104,20 @@ resource "kubernetes_deployment" "paper_servers" {
           port {
             container_port = 25565
           }
+          readiness_probe {
+            exec {
+              command = ["mcstatus", "localhost", "ping"]
+            }
+            initial_delay_seconds = "30"
+            period_seconds        = "5"
+          }
+          liveness_probe {
+            exec {
+              command = ["mcstatus", "localhost", "ping"]
+            }
+            initial_delay_seconds = "30"
+            period_seconds        = "5"
+          }
           dynamic "env" {
             for_each = var.paper_config[each.key]
             content {
@@ -215,6 +229,20 @@ resource "kubernetes_deployment" "fabric_servers" {
           port {
             container_port = 25565
           }
+          readiness_probe {
+            exec {
+              command = ["mcstatus", "localhost", "ping"]
+            }
+            initial_delay_seconds = "30"
+            period_seconds        = "5"
+          }
+          liveness_probe {
+            exec {
+              command = ["mcstatus", "localhost", "ping"]
+            }
+            initial_delay_seconds = "30"
+            period_seconds        = "5"
+          }
           dynamic "env" {
             for_each = var.fabric_config[each.key]
             content {
@@ -318,6 +346,26 @@ resource "kubernetes_deployment" "waterfall_proxy" {
           image_pull_policy = "Always"
           port {
             container_port = 25577
+          }
+          readiness_probe {
+            tcp_socket {
+              port = "25577"
+            }
+            initial_delay_seconds = "30"
+            period_seconds        = "5"
+            failure_threshold     = "10"
+            success_threshold     = "1"
+            timeout_seconds       = "1"
+          }
+          liveness_probe {
+            tcp_socket {
+              port = "25577"
+            }
+            initial_delay_seconds = "30"
+            period_seconds        = "5"
+            failure_threshold     = "10"
+            success_threshold     = "1"
+            timeout_seconds       = "1"
           }
           env {
             name  = "TYPE"
