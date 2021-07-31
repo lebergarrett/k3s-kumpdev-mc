@@ -26,7 +26,6 @@ paper_config = {
   #  }
   creative = {
     DIFFICULTY                 = "peaceful"
-    WHITELIST                  = "Kumpy,Fett32,Free_Autopsy,Baskest,B1ack_Raijin,AlsoKnownAs_,Cailinbrv,Mojo_dodo"
     EULA                       = "true"
     FORCE_GAMEMODE             = "true"
     LEVEL                      = "CreativeWorld"
@@ -45,7 +44,6 @@ paper_config = {
 fabric_config = {
   fabric = {
     DIFFICULTY = "hard"
-    WHITELIST  = "Kumpy,Fett32,Free_Autopsy,Baskest,B1ack_Raijin,AlsoKnownAs_,Cailinbrv,Mojo_dodo"
     EULA       = "true"
     LEVEL      = "1_11 Kumpback"
     # World size is a radius
@@ -61,7 +59,6 @@ fabric_config = {
   }
   fabric-creative = {
     DIFFICULTY                 = "peaceful"
-    WHITELIST                  = "Kumpy,Fett32,Free_Autopsy,Baskest,B1ack_Raijin,AlsoKnownAs_,Cailinbrv,Mojo_dodo"
     EULA                       = "true"
     FORCE_GAMEMODE             = "true"
     LEVEL                      = "CreativeWorld"
@@ -73,6 +70,23 @@ fabric_config = {
     OVERRIDE_SERVER_PROPERTIES = "true"
     PLUGINS_SYNC_UPDATE        = "false"
     PVP                        = "false"
+    SPAWN_PROTECTION           = "0"
+  }
+}
+
+ftb_config = {
+  revelation = {
+    FTB_MODPACK_ID             = "35"
+    DIFFICULTY                 = "hard"
+    EULA                       = "true"
+    JVM_DD_OPTS                = "fml.queryResult=confirm"
+    MAX_WORLD_SIZE             = "5000"
+    MEMORY                     = "4G"
+    MODS                       = "https://repo.spongepowered.org/maven/org/spongepowered/spongeforge/1.12.2-2838-7.3.0/spongeforge-1.12.2-2838-7.3.0.jar"
+    ONLINE_MODE                = "false"
+    OVERRIDE_SERVER_PROPERTIES = "true"
+    PLUGINS_SYNC_UPDATE        = "false"
+    PVP                        = "true"
     SPAWN_PROTECTION           = "0"
   }
 }

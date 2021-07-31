@@ -58,7 +58,7 @@ resource "kubernetes_config_map" "fabric_servers" {
 
 resource "kubernetes_config_map" "ftb_servers" {
   metadata {
-    name = "ftb-servers-configmap"
+    name      = "ftb-servers-configmap"
     namespace = var.server_name
   }
   data = {

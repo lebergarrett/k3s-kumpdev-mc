@@ -33,3 +33,4 @@ override.tf.json
 
 # Ignore ddclient config as there is sensitive data
 ddclient.conf
+ddclient.tpl
