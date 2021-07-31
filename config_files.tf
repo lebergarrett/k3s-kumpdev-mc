@@ -1,3 +1,14 @@
+resource "kubernetes_config_map" "whitelist" {
+  metadata {
+    name      = "whitelist-configmap"
+    namespace = var.server_name
+  }
+  data = {
+    "whitelist.json" = file("${path.root}/templates/whitelist.json")
+  }
+}
+
+
 resource "kubernetes_config_map" "paper_config" {
   metadata {
     name      = "paper-configmap"
@@ -45,17 +56,25 @@ resource "kubernetes_config_map" "fabric_servers" {
   }
 }
 
-resource "kubernetes_config_map" "waterfall_proxy" {
+resource "kubernetes_config_map" "ftb_servers" {
   metadata {
-    name      = "waterfall-proxy-configmap"
+    name = "ftb-servers-configmap"
     namespace = var.server_name
   }
   data = {
-    "config.yml" = templatefile("${path.root}/templates/waterfall-config.tpl", {
-      mc_ops                = var.mc_ops
-      proxy_motd            = var.proxy_motd
-      proxy_priority_server = var.proxy_priority_server
-      servers               = concat([for server, config in var.paper_config : server], [for server, config in var.fabric_config : server])
+    "global.conf" = file("${path.root}/templates/sponge-global.tpl")
+  }
+}
+
+resource "kubernetes_config_map" "velocity_proxy" {
+  metadata {
+    name      = "velocity-proxy-configmap"
+    namespace = var.server_name
+  }
+  data = {
+    "velocity.toml" = templatefile("${path.root}/templates/velocity.tpl", {
+      proxy_motd = var.proxy_motd
+      servers    = concat([for server, config in var.paper_config : server], [for server, config in var.fabric_config : server], [for server, config in var.ftb_config : server])
     })
   }
 }

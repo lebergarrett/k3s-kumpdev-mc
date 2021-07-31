@@ -3,6 +3,7 @@ provider "kubernetes" {
 }
 
 resource "kubernetes_deployment" "luckperms_mariadb" {
+  count = var.paper_config != {} ? 1 : 0
   metadata {
     name      = "luckperms-mariadb"
     namespace = var.server_name
@@ -108,14 +109,14 @@ resource "kubernetes_deployment" "paper_servers" {
             exec {
               command = ["mcstatus", "localhost", "ping"]
             }
-            initial_delay_seconds = "30"
+            initial_delay_seconds = "90"
             period_seconds        = "5"
           }
           liveness_probe {
             exec {
               command = ["mcstatus", "localhost", "ping"]
             }
-            initial_delay_seconds = "30"
+            initial_delay_seconds = "90"
             period_seconds        = "5"
           }
           dynamic "env" {
@@ -170,6 +171,17 @@ resource "kubernetes_deployment" "paper_servers" {
             sub_path   = "config.yml"
             mount_path = "/data/plugins/LuckPerms/config.yml"
           }
+          volume_mount {
+            name       = "whitelist-volume"
+            sub_path   = "whitelist.json"
+            mount_path = "/data/whitelist.json"
+          }
+        }
+        volume {
+          name = "whitelist-volume"
+          config_map {
+            name = "whitelist-configmap"
+          }
         }
         volume {
           name = "paper-config-volume"
@@ -201,8 +213,7 @@ resource "kubernetes_deployment" "paper_servers" {
 }
 
 resource "kubernetes_deployment" "fabric_servers" {
-  depends_on = [kubernetes_deployment.luckperms_mariadb]
-  for_each   = var.fabric_config
+  for_each = var.fabric_config
   metadata {
     name      = each.key
     namespace = var.server_name
@@ -233,14 +244,14 @@ resource "kubernetes_deployment" "fabric_servers" {
             exec {
               command = ["mcstatus", "localhost", "ping"]
             }
-            initial_delay_seconds = "30"
+            initial_delay_seconds = "60"
             period_seconds        = "5"
           }
           liveness_probe {
             exec {
               command = ["mcstatus", "localhost", "ping"]
             }
-            initial_delay_seconds = "30"
+            initial_delay_seconds = "60"
             period_seconds        = "5"
           }
           dynamic "env" {
@@ -285,6 +296,17 @@ resource "kubernetes_deployment" "fabric_servers" {
             sub_path   = "FabricProxy.toml"
             mount_path = "/config/FabricProxy.toml"
           }
+          volume_mount {
+            name       = "whitelist-volume"
+            sub_path   = "whitelist.json"
+            mount_path = "/data/whitelist.json"
+          }
+        }
+        volume {
+          name = "whitelist-volume"
+          config_map {
+            name = "whitelist-configmap"
+          }
         }
         volume {
           name = "fabric-config-volume"
@@ -303,9 +325,110 @@ resource "kubernetes_deployment" "fabric_servers" {
   }
 }
 
+resource "kubernetes_deployment" "ftb_servers" {
+  for_each = var.ftb_config
+  metadata {
+    name      = each.key
+    namespace = var.server_name
+  }
+  spec {
+    replicas = 1
+    selector {
+      match_labels = {
+        app = "minecraft"
+      }
+    }
+    template {
+      metadata {
+        labels = {
+          app = "minecraft"
+          id  = each.key
+        }
+      }
+      spec {
+        container {
+          name              = each.key
+          image             = "itzg/minecraft-server:java8-multiarch"
+          image_pull_policy = "Always"
+          port {
+            container_port = 25565
+          }
+          readiness_probe {
+            exec {
+              command = ["mcstatus", "localhost", "ping"]
+            }
+            initial_delay_seconds = "300"
+            period_seconds        = "5"
+          }
+          liveness_probe {
+            exec {
+              command = ["mcstatus", "localhost", "ping"]
+            }
+            initial_delay_seconds = "300"
+            period_seconds        = "5"
+          }
+          dynamic "env" {
+            for_each = var.ftb_config[each.key]
+            content {
+              name  = env.key
+              value = env.value
+            }
+          }
+          env {
+            name  = "TYPE"
+            value = "FTBA"
+          }
+          env {
+            name  = "OPS"
+            value = var.mc_ops
+          }
+          resources {
+            requests = {
+              cpu    = "1"
+              memory = var.ftb_config[each.key]["MEMORY"]
+            }
+          }
+          volume_mount {
+            mount_path = "/data"
+            name       = each.key
+          }
+          volume_mount {
+            name       = "ftb-config-volume"
+            sub_path   = "global.conf"
+            mount_path = "/config/sponge/global.conf"
+          }
+          volume_mount {
+            name       = "whitelist-volume"
+            sub_path   = "whitelist.json"
+            mount_path = "/data/whitelist.json"
+          }
+        }
+        volume {
+          name = "whitelist-volume"
+          config_map {
+            name = "whitelist-configmap"
+          }
+        }
+        volume {
+          name = "ftb-config-volume"
+          config_map {
+            name = "ftb-servers-configmap"
+          }
+        }
+        volume {
+          name = each.key
+          persistent_volume_claim {
+            claim_name = each.key
+          }
+        }
+      }
+    }
+  }
+}
+
 resource "kubernetes_service" "mc_servers" {
   depends_on = [kubernetes_deployment.luckperms_mariadb]
-  for_each   = merge(var.fabric_config, var.paper_config)
+  for_each   = merge(var.fabric_config, var.paper_config, var.ftb_config)
   metadata {
     name      = each.key
     namespace = var.server_name
@@ -321,28 +444,28 @@ resource "kubernetes_service" "mc_servers" {
   }
 }
 
-resource "kubernetes_deployment" "waterfall_proxy" {
+resource "kubernetes_deployment" "velocity_proxy" {
   metadata {
-    name      = "waterfall-proxy"
+    name      = "velocity-proxy"
     namespace = var.server_name
   }
   spec {
     replicas = 1
     selector {
       match_labels = {
-        app = "waterfall-proxy"
+        app = "velocity-proxy"
       }
     }
     template {
       metadata {
         labels = {
-          app = "waterfall-proxy"
+          app = "velocity-proxy"
         }
       }
       spec {
         container {
-          image             = "itzg/bungeecord:latest"
-          name              = "waterfall-proxy"
+          image             = "imkumpy/waterfall-mc:main"
+          name              = "velocity-proxy"
           image_pull_policy = "Always"
           port {
             container_port = 25577
@@ -369,17 +492,17 @@ resource "kubernetes_deployment" "waterfall_proxy" {
           }
           env {
             name  = "TYPE"
-            value = "WATERFALL"
+            value = "VELOCITY"
           }
           volume_mount {
-            name       = "waterfall-proxy-volume"
+            name       = "velocity-proxy-volume"
             mount_path = "/config"
           }
         }
         volume {
-          name = "waterfall-proxy-volume"
+          name = "velocity-proxy-volume"
           config_map {
-            name = "waterfall-proxy-configmap"
+            name = "velocity-proxy-configmap"
           }
         }
       }
@@ -387,14 +510,14 @@ resource "kubernetes_deployment" "waterfall_proxy" {
   }
 }
 
-resource "kubernetes_service" "waterfall_proxy" {
+resource "kubernetes_service" "velocity_proxy" {
   metadata {
-    name      = "waterfall-proxy"
+    name      = "velocity-proxy"
     namespace = var.server_name
   }
   spec {
     selector = {
-      app = "waterfall-proxy"
+      app = "velocity-proxy"
     }
     type = "LoadBalancer"
     port {

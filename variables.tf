@@ -1,6 +1,13 @@
 variable "fabric_config" {
   description = "env vars for the vanilla server"
   type        = map(map(string))
+  default     = {}
+}
+
+variable "ftb_config" {
+  description = "env vars for the ftb server"
+  type        = map(map(string))
+  default     = {}
 }
 
 variable "mc_connection_port" {
@@ -22,6 +29,7 @@ variable "mc_version" {
 variable "paper_config" {
   description = "env vars for the vanilla server"
   type        = map(map(string))
+  default     = {}
 }
 
 variable "proxy_motd" {
