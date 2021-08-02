@@ -348,7 +348,8 @@ resource "kubernetes_deployment" "ftb_servers" {
       spec {
         container {
           name              = each.key
-          image             = "itzg/minecraft-server:java8-multiarch"
+          #image             = "itzg/minecraft-server:java8-multiarch"
+          image = "imkumpy/ftb-fabric-mc:main"
           image_pull_policy = "Always"
           port {
             container_port = 25565

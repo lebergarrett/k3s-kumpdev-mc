@@ -61,18 +61,18 @@ fabric_config = {
 }
 
 ftb_config = {
-  revelation = {
-    FTB_MODPACK_ID             = "35"
-    DIFFICULTY                 = "hard"
-    EULA                       = "true"
-    JVM_DD_OPTS                = "fml.queryResult=confirm"
-    MAX_WORLD_SIZE             = "5000"
-    MEMORY                     = "4G"
-    MODS                       = "https://repo.spongepowered.org/maven/org/spongepowered/spongeforge/1.12.2-2838-7.3.0/spongeforge-1.12.2-2838-7.3.0.jar"
-    ONLINE_MODE                = "false"
-    OVERRIDE_SERVER_PROPERTIES = "true"
-    PLUGINS_SYNC_UPDATE        = "false"
-    PVP                        = "true"
-    SPAWN_PROTECTION           = "0"
-  }
+  # revelation = {
+  #   FTB_MODPACK_ID             = "35"
+  #   DIFFICULTY                 = "hard"
+  #   EULA                       = "true"
+  #   JVM_DD_OPTS                = "fml.queryResult=confirm"
+  #   MAX_WORLD_SIZE             = "5000"
+  #   MEMORY                     = "4G"
+  #   MODS                       = "https://repo.spongepowered.org/maven/org/spongepowered/spongeforge/1.12.2-2838-7.3.0/spongeforge-1.12.2-2838-7.3.0.jar"
+  #   ONLINE_MODE                = "false"
+  #   OVERRIDE_SERVER_PROPERTIES = "true"
+  #   PLUGINS_SYNC_UPDATE        = "false"
+  #   PVP                        = "true"
+  #   SPAWN_PROTECTION           = "0"
+  # }
 }
