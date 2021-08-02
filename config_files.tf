@@ -4,7 +4,7 @@ resource "kubernetes_config_map" "whitelist" {
     namespace = var.server_name
   }
   data = {
-    "whitelist.json" = file("${path.root}/templates/whitelist.json")
+    "whitelist.json" = file("${path.root}/templates/whitelist.tpl")
   }
 }
 
@@ -16,6 +16,9 @@ resource "kubernetes_config_map" "paper_config" {
   }
   data = {
     "spigot.yml" = file("${path.root}/templates/spigot.tpl")
+    "paper.yml" = templatefile("${path.root}/templates/spigot.tpl", {
+      forwarding_secret = random_password.velocity_secret.result
+    })
   }
 }
 
@@ -52,18 +55,24 @@ resource "kubernetes_config_map" "fabric_servers" {
     namespace = var.server_name
   }
   data = {
-    "FabricProxy.toml" = file("${path.root}/templates/FabricProxy.tpl")
+    "FabricProxy.toml" = templatefile("${path.root}/templates/FabricProxy.tpl", {
+      forwarding_secret = random_password.velocity_secret.result
+    })
   }
 }
 
-resource "kubernetes_config_map" "ftb_servers" {
-  metadata {
-    name      = "ftb-servers-configmap"
-    namespace = var.server_name
-  }
-  data = {
-    "global.conf" = file("${path.root}/templates/sponge-global.tpl")
-  }
+# resource "kubernetes_config_map" "ftb_servers" {
+#   metadata {
+#     name      = "ftb-servers-configmap"
+#     namespace = var.server_name
+#   }
+#   data = {
+#     "global.conf" = file("${path.root}/templates/sponge-global.tpl")
+#   }
+# }
+
+resource "random_password" "velocity_secret" {
+  length = 16
 }
 
 resource "kubernetes_config_map" "velocity_proxy" {
@@ -73,8 +82,9 @@ resource "kubernetes_config_map" "velocity_proxy" {
   }
   data = {
     "velocity.toml" = templatefile("${path.root}/templates/velocity.tpl", {
-      proxy_motd = var.proxy_motd
-      servers    = concat([for server, config in var.paper_config : server], [for server, config in var.fabric_config : server], [for server, config in var.ftb_config : server])
+      forwarding_secret = random_password.velocity_secret.result
+      proxy_motd        = var.proxy_motd
+      servers           = concat([for server, config in var.paper_config : server], [for server, config in var.fabric_config : server], [for server, config in var.ftb_config : server])
     })
   }
 }

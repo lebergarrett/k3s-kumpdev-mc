@@ -61,6 +61,7 @@ resource "kubernetes_deployment" "luckperms_mariadb" {
 }
 
 resource "kubernetes_service" "luckperms_mariadb" {
+  count = var.paper_config != {} ? 1 : 0
   metadata {
     name      = "luckperms-mariadb"
     namespace = var.server_name
@@ -133,6 +134,10 @@ resource "kubernetes_deployment" "paper_servers" {
           env {
             name  = "VERSION"
             value = var.mc_version
+          }
+          env {
+            name  = "ENABLE_WHITELIST"
+            value = "true"
           }
           env {
             name  = "OPS"
@@ -270,6 +275,10 @@ resource "kubernetes_deployment" "fabric_servers" {
             value = var.mc_version
           }
           env {
+            name  = "ENABLE_WHITELIST"
+            value = "true"
+          }
+          env {
             name  = "OPS"
             value = var.mc_ops
           }
@@ -347,9 +356,9 @@ resource "kubernetes_deployment" "ftb_servers" {
       }
       spec {
         container {
-          name              = each.key
+          name = each.key
           #image             = "itzg/minecraft-server:java8-multiarch"
-          image = "imkumpy/ftb-fabric-mc:main"
+          image             = "imkumpy/ftb-fabric-mc:main"
           image_pull_policy = "Always"
           port {
             container_port = 25565
@@ -358,14 +367,14 @@ resource "kubernetes_deployment" "ftb_servers" {
             exec {
               command = ["mcstatus", "localhost", "ping"]
             }
-            initial_delay_seconds = "300"
+            initial_delay_seconds = "120"
             period_seconds        = "5"
           }
           liveness_probe {
             exec {
               command = ["mcstatus", "localhost", "ping"]
             }
-            initial_delay_seconds = "300"
+            initial_delay_seconds = "120"
             period_seconds        = "5"
           }
           dynamic "env" {
@@ -376,8 +385,13 @@ resource "kubernetes_deployment" "ftb_servers" {
             }
           }
           env {
-            name  = "TYPE"
-            value = "FTBA"
+            name = "TYPE"
+            #value = "FTBA"
+            value = "CURSEFORGE"
+          }
+          env {
+            name  = "ENABLE_WHITELIST"
+            value = "true"
           }
           env {
             name  = "OPS"
@@ -393,15 +407,26 @@ resource "kubernetes_deployment" "ftb_servers" {
             mount_path = "/data"
             name       = each.key
           }
-          volume_mount {
-            name       = "ftb-config-volume"
-            sub_path   = "global.conf"
-            mount_path = "/config/sponge/global.conf"
-          }
+          # volume_mount {
+          #   name       = "ftb-config-volume"
+          #   sub_path   = "global.conf"
+          #   mount_path = "/config/sponge/global.conf"
+          # }
           volume_mount {
             name       = "whitelist-volume"
             sub_path   = "whitelist.json"
             mount_path = "/data/whitelist.json"
+          }
+          volume_mount {
+            name       = "fabric-config-volume"
+            sub_path   = "FabricProxy.toml"
+            mount_path = "/config/FabricProxy.toml"
+          }
+        }
+        volume {
+          name = "fabric-config-volume"
+          config_map {
+            name = "fabric-servers-configmap"
           }
         }
         volume {
@@ -410,12 +435,12 @@ resource "kubernetes_deployment" "ftb_servers" {
             name = "whitelist-configmap"
           }
         }
-        volume {
-          name = "ftb-config-volume"
-          config_map {
-            name = "ftb-servers-configmap"
-          }
-        }
+        # volume {
+        #   name = "ftb-config-volume"
+        #   config_map {
+        #     name = "ftb-servers-configmap"
+        #   }
+        # }
         volume {
           name = each.key
           persistent_volume_claim {
@@ -428,7 +453,7 @@ resource "kubernetes_deployment" "ftb_servers" {
 }
 
 resource "kubernetes_service" "mc_servers" {
-  depends_on = [kubernetes_deployment.luckperms_mariadb]
+  depends_on = [kubernetes_deployment.luckperms_mariadb, kubernetes_deployment.velocity_proxy]
   for_each   = merge(var.fabric_config, var.paper_config, var.ftb_config)
   metadata {
     name      = each.key
@@ -446,6 +471,7 @@ resource "kubernetes_service" "mc_servers" {
 }
 
 resource "kubernetes_deployment" "velocity_proxy" {
+  count = length(merge(var.fabric_config, var.paper_config, var.ftb_config)) > 1 ? 1 : 0
   metadata {
     name      = "velocity-proxy"
     namespace = var.server_name
@@ -512,6 +538,7 @@ resource "kubernetes_deployment" "velocity_proxy" {
 }
 
 resource "kubernetes_service" "velocity_proxy" {
+  count = length(merge(var.fabric_config, var.paper_config, var.ftb_config)) > 1 ? 1 : 0
   metadata {
     name      = "velocity-proxy"
     namespace = var.server_name

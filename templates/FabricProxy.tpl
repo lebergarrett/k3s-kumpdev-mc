@@ -1,3 +1,3 @@
-BungeeCord = true
-Velocity = false
-secret = ""
+BungeeCord = false
+Velocity = true
+secret = "${forwarding_secret}"

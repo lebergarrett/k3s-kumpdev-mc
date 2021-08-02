@@ -1,7 +1,7 @@
 server_name = "dev-mc-kumpdev"
 
 # Waterfall Proxy Configuration
-proxy_motd            = "DEV &2Kumpdev &l&7is a server network powered by Kubernetes!"
+proxy_motd            = "&2Kumpdev &l&7is a server network powered by Kubernetes!"
 proxy_priority_server = "fabric"
 
 # Minecraft Vars
@@ -10,6 +10,20 @@ mc_version         = "1.17.1"
 mc_ops             = "Kumpy,Fett32"
 
 paper_config = {
+  #  lobby = {
+  #    DIFFICULTY                 = "peaceful"
+  #    ENFORCE_WHITELIST          = "true"
+  #    EULA                       = "true"
+  #    LEVEL                      = "LobbyWorld"
+  #    MAX_WORLD_SIZE             = "100"
+  #    MEMORY                     = "1G"
+  #    ONLINE_MODE                = "false"
+  #    OVERRIDE_SERVER_PROPERTIES = "true"
+  #    PLUGINS_SYNC_UPDATE        = "false"
+  #    PVP                        = "false"
+  #    SERVER_NAME                = "lobby"
+  #    SPAWN_PROTECTION           = "0"
+  #  }
   creative = {
     DIFFICULTY                 = "peaceful"
     EULA                       = "true"
@@ -75,4 +89,17 @@ ftb_config = {
   #   PVP                        = "true"
   #   SPAWN_PROTECTION           = "0"
   # }
+  ftb-cotton = {
+    FTB_MODPACK_ID             = "86"
+    DIFFICULTY                 = "hard"
+    EULA                       = "true"
+    JVM_DD_OPTS                = "fml.queryResult=confirm"
+    MAX_WORLD_SIZE             = "5000"
+    MEMORY                     = "4G"
+    ONLINE_MODE                = "false"
+    OVERRIDE_SERVER_PROPERTIES = "true"
+    PLUGINS_SYNC_UPDATE        = "false"
+    PVP                        = "true"
+    SPAWN_PROTECTION           = "0"
+  }
 }

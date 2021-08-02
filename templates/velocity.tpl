@@ -25,9 +25,9 @@ prevent-client-proxy-connections = false
 #                  unable to implement network level firewalling (on a shared host).
 # - "modern":      Forward player IPs and UUIDs as part of the login process using
 #                  Velocity's native forwarding. Only applicable for Minecraft 1.13 or higher.
-player-info-forwarding-mode = "legacy"
+player-info-forwarding-mode = "modern"
 # If you are using modern or BungeeGuard IP forwarding, configure a unique secret here.
-forwarding-secret = "secrethere"
+forwarding-secret = "${forwarding_secret}"
 # Announce whether or not your server supports Forge. If you run a modded server, we
 # suggest turning this on.
 #
