@@ -15,9 +15,12 @@ resource "kubernetes_config_map" "paper_config" {
     namespace = var.server_name
   }
   data = {
-    "spigot.yml" = file("${path.root}/templates/spigot.tpl")
-    "paper.yml" = templatefile("${path.root}/templates/spigot.tpl", {
-      forwarding_secret = random_password.velocity_secret.result
+    "spigot.yml" = templatefile("${path.root}/templates/spigot.tpl", {
+      proxy_type = var.proxy_type
+    })
+    "paper.yml" = templatefile("${path.root}/templates/paper.tpl", {
+      forwarding_secret = var.proxy_type == "VELOCITY" ? random_password.velocity_secret[0].result : ""
+      proxy_type        = var.proxy_type
     })
   }
 }
@@ -56,7 +59,8 @@ resource "kubernetes_config_map" "fabric_servers" {
   }
   data = {
     "FabricProxy.toml" = templatefile("${path.root}/templates/FabricProxy.tpl", {
-      forwarding_secret = random_password.velocity_secret.result
+      forwarding_secret = var.proxy_type == "VELOCITY" ? random_password.velocity_secret[0].result : ""
+      proxy_type        = var.proxy_type
     })
   }
 }
@@ -72,19 +76,37 @@ resource "kubernetes_config_map" "fabric_servers" {
 # }
 
 resource "random_password" "velocity_secret" {
+  count  = length(merge(var.fabric_config, var.paper_config, var.ftb_config)) > 1 && var.proxy_type == "VELOCITY" ? 1 : 0
   length = 16
 }
 
 resource "kubernetes_config_map" "velocity_proxy" {
+  count = length(merge(var.fabric_config, var.paper_config, var.ftb_config)) > 1 && var.proxy_type == "VELOCITY" ? 1 : 0
   metadata {
     name      = "velocity-proxy-configmap"
     namespace = var.server_name
   }
   data = {
     "velocity.toml" = templatefile("${path.root}/templates/velocity.tpl", {
-      forwarding_secret = random_password.velocity_secret.result
+      forwarding_secret = random_password.velocity_secret[0].result
       proxy_motd        = var.proxy_motd
       servers           = concat([for server, config in var.paper_config : server], [for server, config in var.fabric_config : server], [for server, config in var.ftb_config : server])
+    })
+  }
+}
+
+resource "kubernetes_config_map" "bungee_waterfall_proxy" {
+  count = length(merge(var.fabric_config, var.paper_config, var.ftb_config)) > 1 && var.proxy_type == "WATERFALL" ? 1 : 0
+  metadata {
+    name      = "bungee-waterfall-proxy-configmap"
+    namespace = var.server_name
+  }
+  data = {
+    "config.yml" = templatefile("${path.root}/templates/bungee-waterfall-config.tpl", {
+      mc_ops                = var.mc_ops
+      proxy_motd            = var.proxy_motd
+      proxy_priority_server = var.proxy_priority_server
+      servers               = concat([for server, config in var.paper_config : server], [for server, config in var.fabric_config : server], [for server, config in var.ftb_config : server])
     })
   }
 }

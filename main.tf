@@ -367,14 +367,14 @@ resource "kubernetes_deployment" "ftb_servers" {
             exec {
               command = ["mcstatus", "localhost", "ping"]
             }
-            initial_delay_seconds = "120"
+            initial_delay_seconds = "240"
             period_seconds        = "5"
           }
           liveness_probe {
             exec {
               command = ["mcstatus", "localhost", "ping"]
             }
-            initial_delay_seconds = "120"
+            initial_delay_seconds = "240"
             period_seconds        = "5"
           }
           dynamic "env" {
@@ -471,7 +471,7 @@ resource "kubernetes_service" "mc_servers" {
 }
 
 resource "kubernetes_deployment" "velocity_proxy" {
-  count = length(merge(var.fabric_config, var.paper_config, var.ftb_config)) > 1 ? 1 : 0
+  count = length(merge(var.fabric_config, var.paper_config, var.ftb_config)) > 1 && var.proxy_type == "VELOCITY" ? 1 : 0
   metadata {
     name      = "velocity-proxy"
     namespace = var.server_name
@@ -480,19 +480,19 @@ resource "kubernetes_deployment" "velocity_proxy" {
     replicas = 1
     selector {
       match_labels = {
-        app = "velocity-proxy"
+        app = "mc-proxy"
       }
     }
     template {
       metadata {
         labels = {
-          app = "velocity-proxy"
+          app = "mc-proxy"
         }
       }
       spec {
         container {
           image             = "imkumpy/waterfall-mc:main"
-          name              = "velocity-proxy"
+          name              = "mc-proxy"
           image_pull_policy = "Always"
           port {
             container_port = 25577
@@ -537,15 +537,81 @@ resource "kubernetes_deployment" "velocity_proxy" {
   }
 }
 
-resource "kubernetes_service" "velocity_proxy" {
-  count = length(merge(var.fabric_config, var.paper_config, var.ftb_config)) > 1 ? 1 : 0
+resource "kubernetes_deployment" "waterfall_proxy" {
+  count = length(merge(var.fabric_config, var.paper_config, var.ftb_config)) > 1 && (var.proxy_type == "WATERFALL" || var.proxy_type == "BUNGEECORD") ? 1 : 0
   metadata {
-    name      = "velocity-proxy"
+    name      = "waterfall-proxy"
+    namespace = var.server_name
+  }
+  spec {
+    replicas = 1
+    selector {
+      match_labels = {
+        app = "mc-proxy"
+      }
+    }
+    template {
+      metadata {
+        labels = {
+          app = "mc-proxy"
+        }
+      }
+      spec {
+        container {
+          image             = "imkumpy/waterfall-mc:main"
+          name              = "mc-proxy"
+          image_pull_policy = "Always"
+          port {
+            container_port = 25577
+          }
+          readiness_probe {
+            tcp_socket {
+              port = "25577"
+            }
+            initial_delay_seconds = "30"
+            period_seconds        = "5"
+            failure_threshold     = "10"
+            success_threshold     = "1"
+            timeout_seconds       = "1"
+          }
+          liveness_probe {
+            tcp_socket {
+              port = "25577"
+            }
+            initial_delay_seconds = "30"
+            period_seconds        = "5"
+            failure_threshold     = "10"
+            success_threshold     = "1"
+            timeout_seconds       = "1"
+          }
+          env {
+            name  = "TYPE"
+            value = var.proxy_type
+          }
+          volume_mount {
+            name       = "waterfall-proxy-volume"
+            mount_path = "/config"
+          }
+        }
+        volume {
+          name = "waterfall-proxy-volume"
+          config_map {
+            name = "bungee-waterfall-proxy-configmap"
+          }
+        }
+      }
+    }
+  }
+}
+
+resource "kubernetes_service" "mc_proxy" {
+  metadata {
+    name      = "mc-proxy"
     namespace = var.server_name
   }
   spec {
     selector = {
-      app = "velocity-proxy"
+      app = "mc-proxy"
     }
     type = "LoadBalancer"
     port {

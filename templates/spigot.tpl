@@ -35,7 +35,7 @@ commands:
   - testforblock
   - tellraw
 settings:
-  bungeecord: true
+  bungeecord: ${proxy_type == "WATERFALL" || proxy_type == "BUNGEECORD" ? true : false}
   sample-count: 12
   player-shuffle: 0
   user-cache-size: 1000

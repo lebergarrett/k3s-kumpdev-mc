@@ -40,7 +40,7 @@ settings:
   enable-player-collisions: true
   use-alternative-luck-formula: false
   console-has-all-permissions: false
-  bungee-online-mode: true
+  bungee-online-mode: ${proxy_type == "WATERFALL" || proxy_type == "BUNGEECORD" ? true : false}
   load-permissions-yml-before-plugins: true
   unsupported-settings:
     allow-permanent-block-break-exploits: false
@@ -68,9 +68,9 @@ settings:
     page-max: 2560
     total-multiplier: 0.98
   velocity-support:
-    enabled: true
+    enabled: ${proxy_type == "VELOCITY" ? true : false}
     online-mode: true
-    secret: '${forwarding_secret}'
+    secret: '${proxy_type == "VELOCITY" ? forwarding_secret : ""}'
   console:
     enable-brigadier-highlighting: true
     enable-brigadier-completions: true

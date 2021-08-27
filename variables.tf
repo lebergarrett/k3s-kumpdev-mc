@@ -32,9 +32,21 @@ variable "paper_config" {
   default     = {}
 }
 
+variable "proxy_type" {
+  description = "The type of proxy to be used by the server network"
+  type        = string
+  default     = ""
+
+  validation {
+    condition     = contains(["BUNGEECORD", "WATERFALL", "VELOCITY", ""], var.proxy_type)
+    error_message = "Valid values for var: proxy_type are (BUNGEECORD, WATERFALL, VELOCITY)."
+  }
+}
+
 variable "proxy_motd" {
   description = "Message of the day for the waterfall proxy (What clients see on the server browser)"
   type        = string
+  default     = "This is a server network powered by Kubernetes!"
 }
 
 variable "proxy_priority_server" {

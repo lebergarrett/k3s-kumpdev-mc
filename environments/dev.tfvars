@@ -1,6 +1,7 @@
 server_name = "dev-mc-kumpdev"
 
-# Waterfall Proxy Configuration
+# Proxy Configuration
+proxy_type            = "WATERFALL"
 proxy_motd            = "&2Kumpdev &l&7is a server network powered by Kubernetes!"
 proxy_priority_server = "fabric"
 
@@ -49,7 +50,7 @@ fabric_config = {
     # World size is a radius
     # Pre 1.17 world size was 15000, Increasing to 15500 until 1.18, then will increase to 17000
     MAX_WORLD_SIZE             = "15500"
-    MEMORY                     = "4G"
+    MEMORY                     = "1G"
     ONLINE_MODE                = "false"
     OVERRIDE_SERVER_PROPERTIES = "true"
     PLUGINS_SYNC_UPDATE        = "false"
@@ -89,17 +90,17 @@ ftb_config = {
   #   PVP                        = "true"
   #   SPAWN_PROTECTION           = "0"
   # }
-  ftb-cotton = {
-    FTB_MODPACK_ID             = "86"
-    DIFFICULTY                 = "hard"
-    EULA                       = "true"
-    JVM_DD_OPTS                = "fml.queryResult=confirm"
-    MAX_WORLD_SIZE             = "5000"
-    MEMORY                     = "4G"
-    ONLINE_MODE                = "false"
-    OVERRIDE_SERVER_PROPERTIES = "true"
-    PLUGINS_SYNC_UPDATE        = "false"
-    PVP                        = "true"
-    SPAWN_PROTECTION           = "0"
-  }
+  # ftb-cotton = {
+  #   FTB_MODPACK_ID             = "86"
+  #   DIFFICULTY                 = "hard"
+  #   EULA                       = "true"
+  #   JVM_DD_OPTS                = "fml.queryResult=confirm"
+  #   MAX_WORLD_SIZE             = "5000"
+  #   MEMORY                     = "4G"
+  #   ONLINE_MODE                = "false"
+  #   OVERRIDE_SERVER_PROPERTIES = "true"
+  #   PLUGINS_SYNC_UPDATE        = "false"
+  #   PVP                        = "true"
+  #   SPAWN_PROTECTION           = "0"
+  # }
 }
