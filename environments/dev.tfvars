@@ -1,7 +1,8 @@
 server_name = "dev-mc-kumpdev"
 
+enable_ddns = true
+
 # Proxy Configuration
-proxy_type            = "WATERFALL"
 proxy_motd            = "&2Kumpdev &l&7is a server network powered by Kubernetes!"
 proxy_priority_server = "fabric"
 

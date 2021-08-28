@@ -1,4 +1,5 @@
 resource "kubernetes_deployment" "ddns" {
+  count = var.enable_ddns == true ? 1 : 0
   metadata {
     name      = "ddns-ddclient"
     namespace = var.server_name

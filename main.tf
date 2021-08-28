@@ -3,7 +3,7 @@ provider "kubernetes" {
 }
 
 resource "kubernetes_deployment" "luckperms_mariadb" {
-  count = var.paper_config != {} ? 1 : 0
+  count = length(var.paper_config) > 0 ? 1 : 0
   metadata {
     name      = "luckperms-mariadb"
     namespace = var.server_name
@@ -61,7 +61,7 @@ resource "kubernetes_deployment" "luckperms_mariadb" {
 }
 
 resource "kubernetes_service" "luckperms_mariadb" {
-  count = var.paper_config != {} ? 1 : 0
+  count = length(var.paper_config) > 0 ? 1 : 0
   metadata {
     name      = "luckperms-mariadb"
     namespace = var.server_name
@@ -417,17 +417,6 @@ resource "kubernetes_deployment" "ftb_servers" {
             sub_path   = "whitelist.json"
             mount_path = "/data/whitelist.json"
           }
-          volume_mount {
-            name       = "fabric-config-volume"
-            sub_path   = "FabricProxy.toml"
-            mount_path = "/config/FabricProxy.toml"
-          }
-        }
-        volume {
-          name = "fabric-config-volume"
-          config_map {
-            name = "fabric-servers-configmap"
-          }
         }
         volume {
           name = "whitelist-volume"
@@ -453,8 +442,7 @@ resource "kubernetes_deployment" "ftb_servers" {
 }
 
 resource "kubernetes_service" "mc_servers" {
-  depends_on = [kubernetes_deployment.luckperms_mariadb, kubernetes_deployment.velocity_proxy]
-  for_each   = merge(var.fabric_config, var.paper_config, var.ftb_config)
+  for_each = merge(var.fabric_config, var.paper_config, var.ftb_config)
   metadata {
     name      = each.key
     namespace = var.server_name
@@ -463,6 +451,7 @@ resource "kubernetes_service" "mc_servers" {
     selector = {
       id = each.key
     }
+    type = length(merge(var.fabric_config, var.paper_config, var.ftb_config)) == 1 ? "LoadBalancer" : null
     port {
       port        = 25565
       target_port = 25565
@@ -605,6 +594,8 @@ resource "kubernetes_deployment" "waterfall_proxy" {
 }
 
 resource "kubernetes_service" "mc_proxy" {
+  count = length(merge(var.fabric_config, var.paper_config, var.ftb_config)) > 1 ? 1 : 0
+
   metadata {
     name      = "mc-proxy"
     namespace = var.server_name

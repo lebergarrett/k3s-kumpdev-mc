@@ -1,3 +1,9 @@
+variable "enable_ddns" {
+  description = "Whether or not to set up Dynamic DNS for the deployment"
+  type        = bool
+  default     = false
+}
+
 variable "fabric_config" {
   description = "env vars for the vanilla server"
   type        = map(map(string))
@@ -35,10 +41,10 @@ variable "paper_config" {
 variable "proxy_type" {
   description = "The type of proxy to be used by the server network"
   type        = string
-  default     = ""
+  default     = "WATERFALL"
 
   validation {
-    condition     = contains(["BUNGEECORD", "WATERFALL", "VELOCITY", ""], var.proxy_type)
+    condition     = contains(["BUNGEECORD", "WATERFALL", "VELOCITY", "NONE"], var.proxy_type)
     error_message = "Valid values for var: proxy_type are (BUNGEECORD, WATERFALL, VELOCITY)."
   }
 }
@@ -52,6 +58,7 @@ variable "proxy_motd" {
 variable "proxy_priority_server" {
   description = "Default server for player to login to on first join"
   type        = string
+  default     = ""
 }
 
 variable "server_name" {

@@ -10,6 +10,7 @@ resource "kubernetes_config_map" "whitelist" {
 
 
 resource "kubernetes_config_map" "paper_config" {
+  count = length(var.paper_config) > 0 ? 1 : 0
   metadata {
     name      = "paper-configmap"
     namespace = var.server_name
@@ -26,6 +27,7 @@ resource "kubernetes_config_map" "paper_config" {
 }
 
 resource "kubernetes_config_map" "paper_essentials" {
+  count = length(var.paper_config) > 0 ? 1 : 0
   metadata {
     name      = "paper-essentials-configmap"
     namespace = var.server_name
@@ -53,6 +55,7 @@ resource "kubernetes_config_map" "paper_luckperms" {
 }
 
 resource "kubernetes_config_map" "fabric_servers" {
+  count = length(var.fabric_config) > 0 ? 1 : 0
   metadata {
     name      = "fabric-servers-configmap"
     namespace = var.server_name
@@ -112,6 +115,7 @@ resource "kubernetes_config_map" "bungee_waterfall_proxy" {
 }
 
 resource "kubernetes_config_map" "ddns" {
+  count = var.enable_ddns == true ? 1 : 0
   metadata {
     name      = "ddns-ddclient-configmap"
     namespace = var.server_name
