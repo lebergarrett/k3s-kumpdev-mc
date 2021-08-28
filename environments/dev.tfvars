@@ -12,20 +12,6 @@ mc_version         = "1.17.1"
 mc_ops             = "Kumpy,Fett32"
 
 paper_config = {
-  #  lobby = {
-  #    DIFFICULTY                 = "peaceful"
-  #    ENFORCE_WHITELIST          = "true"
-  #    EULA                       = "true"
-  #    LEVEL                      = "LobbyWorld"
-  #    MAX_WORLD_SIZE             = "100"
-  #    MEMORY                     = "1G"
-  #    ONLINE_MODE                = "false"
-  #    OVERRIDE_SERVER_PROPERTIES = "true"
-  #    PLUGINS_SYNC_UPDATE        = "false"
-  #    PVP                        = "false"
-  #    SERVER_NAME                = "lobby"
-  #    SPAWN_PROTECTION           = "0"
-  #  }
   creative = {
     DIFFICULTY                 = "peaceful"
     EULA                       = "true"

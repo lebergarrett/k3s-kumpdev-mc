@@ -1,9 +1,9 @@
 server_name = "aof3-mc-kumpdev"
-server_id   = "aof3"
-server_port = "25566"
 
 # Minecraft Vars
-mc_ops = "Kumpy,Fett32"
+mc_connection_port = "25566"
+mc_version         = "1.16.4"
+mc_ops             = "Kumpy,Fett32"
 
 server = {
   CF_BASE_DIR                = "/data"
