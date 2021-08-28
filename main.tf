@@ -453,7 +453,7 @@ resource "kubernetes_service" "mc_servers" {
     }
     type = length(merge(var.fabric_config, var.paper_config, var.ftb_config)) == 1 ? "LoadBalancer" : null
     port {
-      port        = 25565
+      port        = length(merge(var.fabric_config, var.paper_config, var.ftb_config)) == 1 ? var.mc_connection_port : 25565
       target_port = 25565
     }
   }
@@ -606,7 +606,7 @@ resource "kubernetes_service" "mc_proxy" {
     }
     type = "LoadBalancer"
     port {
-      port        = 25565
+      port        = var.mc_connection_port
       target_port = 25577
     }
   }
