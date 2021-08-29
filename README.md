@@ -24,7 +24,7 @@ git clone https://github.com/lebergarrett/mc-kumpdev.git
 
 Once cloned, you will need to create your own ddclient config file and place it at the root of the directory named `ddclient.conf` if you wish to use dynamic DNS.
 
-You will also need to set up the mariadb credentials if you wish to stand up a paper server as I have it set up to automatically deploy luckperms for them. The vars are: 
+You will also need to set up the mariadb credentials if you wish to stand up a paper server as I have it set up to automatically deploy luckperms for them. The vars are:
 
 ```bash
 MARIADB_USER
