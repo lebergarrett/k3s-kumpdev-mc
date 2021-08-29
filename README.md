@@ -1,4 +1,4 @@
-# mc-network
+# mc-kumpdev
 
 Minecraft Server network using Terraform, Kubernetes, Ansible, and Docker Images.
 
