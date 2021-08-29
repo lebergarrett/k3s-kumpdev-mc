@@ -142,7 +142,7 @@ resource "kubernetes_deployment" "paper_servers" {
             value = "true"
           }
           env {
-            name = "EULA"
+            name  = "EULA"
             value = "true"
           }
           env {
@@ -150,11 +150,11 @@ resource "kubernetes_deployment" "paper_servers" {
             value = var.mc_ops
           }
           env {
-            name = "OVERRIDE_SERVER_PROPERTIES"
+            name  = "OVERRIDE_SERVER_PROPERTIES"
             value = "true"
           }
           env {
-            name = "PLUGINS_SYNC_UPDATE"
+            name  = "PLUGINS_SYNC_UPDATE"
             value = "false"
           }
           env {
@@ -293,7 +293,7 @@ resource "kubernetes_deployment" "fabric_servers" {
             value = "true"
           }
           env {
-            name = "EULA"
+            name  = "EULA"
             value = "true"
           }
           env {
@@ -301,11 +301,11 @@ resource "kubernetes_deployment" "fabric_servers" {
             value = var.mc_ops
           }
           env {
-            name = "OVERRIDE_SERVER_PROPERTIES"
+            name  = "OVERRIDE_SERVER_PROPERTIES"
             value = "true"
           }
           env {
-            name = "PLUGINS_SYNC_UPDATE"
+            name  = "PLUGINS_SYNC_UPDATE"
             value = "false"
           }
           env {
@@ -423,7 +423,7 @@ resource "kubernetes_deployment" "ftb_servers" {
             value = "true"
           }
           env {
-            name = "EULA"
+            name  = "EULA"
             value = "true"
           }
           env {
@@ -431,11 +431,11 @@ resource "kubernetes_deployment" "ftb_servers" {
             value = var.mc_ops
           }
           env {
-            name = "OVERRIDE_SERVER_PROPERTIES"
+            name  = "OVERRIDE_SERVER_PROPERTIES"
             value = "true"
           }
           env {
-            name = "PLUGINS_SYNC_UPDATE"
+            name  = "PLUGINS_SYNC_UPDATE"
             value = "false"
           }
           env {

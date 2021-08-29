@@ -25,16 +25,16 @@ paper_config = {
   #    SPAWN_PROTECTION           = "0"
   #  }
   creative = {
-    DIFFICULTY                 = "peaceful"
-    FORCE_GAMEMODE             = "true"
-    LEVEL                      = "CreativeWorld"
-    MAX_WORLD_SIZE             = "1000"
-    MEMORY                     = "1G"
-    MODE                       = "creative"
-    ONLINE_MODE                = "false"
-    PVP                        = "false"
-    SERVER_NAME                = "creative"
-    SPAWN_PROTECTION           = "0"
+    DIFFICULTY       = "peaceful"
+    FORCE_GAMEMODE   = "true"
+    LEVEL            = "CreativeWorld"
+    MAX_WORLD_SIZE   = "1000"
+    MEMORY           = "1G"
+    MODE             = "creative"
+    ONLINE_MODE      = "false"
+    PVP              = "false"
+    SERVER_NAME      = "creative"
+    SPAWN_PROTECTION = "0"
   }
 }
 
@@ -44,24 +44,24 @@ fabric_config = {
     LEVEL      = "1_11 Kumpback"
     # World size is a radius
     # Pre 1.17 world size was 15000, Increasing to 15500 until 1.18, then will increase to 17000
-    MAX_WORLD_SIZE             = "15500"
-    MEMORY                     = "4G"
-    ONLINE_MODE                = "false"
-    PVP                        = "true"
-    SPAWN_PROTECTION           = "0"
-    VIEW_DISTANCE              = "18"
+    MAX_WORLD_SIZE   = "15500"
+    MEMORY           = "4G"
+    ONLINE_MODE      = "false"
+    PVP              = "true"
+    SPAWN_PROTECTION = "0"
+    VIEW_DISTANCE    = "18"
   }
   fabric-creative = {
-    DIFFICULTY                 = "peaceful"
-    FORCE_GAMEMODE             = "true"
-    LEVEL                      = "CreativeWorld"
-    LEVEL_TYPE                 = "FLAT"
-    MAX_WORLD_SIZE             = "1000"
-    MEMORY                     = "1G"
-    MODE                       = "creative"
-    ONLINE_MODE                = "false"
-    PVP                        = "false"
-    SPAWN_PROTECTION           = "0"
+    DIFFICULTY       = "peaceful"
+    FORCE_GAMEMODE   = "true"
+    LEVEL            = "CreativeWorld"
+    LEVEL_TYPE       = "FLAT"
+    MAX_WORLD_SIZE   = "1000"
+    MEMORY           = "1G"
+    MODE             = "creative"
+    ONLINE_MODE      = "false"
+    PVP              = "false"
+    SPAWN_PROTECTION = "0"
   }
 }
 

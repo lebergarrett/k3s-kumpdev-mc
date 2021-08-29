@@ -7,14 +7,14 @@ mc_ops             = "Kumpy,Fett32"
 
 ftb_config = {
   e2e = {
-    CF_BASE_DIR                = "/data"
-    CF_SERVER_MOD              = "/modpacks/Enigmatica2ExpertServer-1.82a.zip"
-    DIFFICULTY                 = "normal"
-    JVM_DD_OPTS                = "fml.queryResult=confirm"
-    MAX_WORLD_SIZE             = "5000"
-    MEMORY                     = "8G"
-    ONLINE_MODE                = "true"
-    PVP                        = "true"
-    SPAWN_PROTECTION           = "0"
+    CF_BASE_DIR      = "/data"
+    CF_SERVER_MOD    = "/modpacks/Enigmatica2ExpertServer-1.82a.zip"
+    DIFFICULTY       = "normal"
+    JVM_DD_OPTS      = "fml.queryResult=confirm"
+    MAX_WORLD_SIZE   = "5000"
+    MEMORY           = "8G"
+    ONLINE_MODE      = "true"
+    PVP              = "true"
+    SPAWN_PROTECTION = "0"
   }
 }
