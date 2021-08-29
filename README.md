@@ -58,4 +58,5 @@ This is HIGHLY tailored to my personal setup so it will require quite a bit of w
 ## TODO
 
 Secret handling (luckperms db, ddclient config)
+
 Abstract away as much as possible to make it usable for others (modules, most likely)
