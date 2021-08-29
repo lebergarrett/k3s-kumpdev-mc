@@ -10,11 +10,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 You will need to already have a working kubernetes cluster with kubectl configured in it's default location (modify the provider config if using an alternate path). This configuration is highly tailored toward my local kubernetes setup. The biggest issues I see for others would be my use of host-path mounting for volumes, and possibly choice of loadbalancers (metallb)
 
-Terraform needs to be installed on your workstation.
-
-```bash
-sudo apt install ansible
-```
+Terraform needs to be installed on your workstation. Refer to Terraform documentation
 
 Refer to my `lebergarrett/mc-kumpdev-pv` repo and provision some persistent storage first. Ensure that the `server_name` var matches the one used in your var file here, as well as the servers listed in `server_list`. I do this to ensure that the server data persists when I run a `terraform destroy` here or make changes that require replacement.
 
