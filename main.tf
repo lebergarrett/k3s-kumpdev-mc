@@ -2,6 +2,10 @@ provider "kubernetes" {
   config_path = "~/.kube/config"
 }
 
+locals {
+  server_count = length(merge(var.fabric_config, var.paper_config, var.ftb_config))
+}
+
 resource "kubernetes_deployment" "luckperms_mariadb" {
   count = length(var.paper_config) > 0 ? 1 : 0
   metadata {
@@ -120,6 +124,12 @@ resource "kubernetes_deployment" "paper_servers" {
             initial_delay_seconds = "90"
             period_seconds        = "5"
           }
+          resources {
+            requests = {
+              cpu    = "0.5"
+              memory = var.paper_config[each.key]["MEMORY"]
+            }
+          }
           dynamic "env" {
             for_each = var.paper_config[each.key]
             content {
@@ -128,20 +138,24 @@ resource "kubernetes_deployment" "paper_servers" {
             }
           }
           env {
-            name  = "TYPE"
-            value = "PAPER"
-          }
-          env {
-            name  = "VERSION"
-            value = var.mc_version
-          }
-          env {
             name  = "ENABLE_WHITELIST"
+            value = "true"
+          }
+          env {
+            name = "EULA"
             value = "true"
           }
           env {
             name  = "OPS"
             value = var.mc_ops
+          }
+          env {
+            name = "OVERRIDE_SERVER_PROPERTIES"
+            value = "true"
+          }
+          env {
+            name = "PLUGINS_SYNC_UPDATE"
+            value = "false"
           }
           env {
             name  = "REMOVE_OLD_MODS"
@@ -151,20 +165,22 @@ resource "kubernetes_deployment" "paper_servers" {
             name  = "REMOVE_OLD_MODS_INCLUDE"
             value = "*.jar"
           }
-          resources {
-            requests = {
-              cpu    = "0.5"
-              memory = var.paper_config[each.key]["MEMORY"]
-            }
+          env {
+            name  = "TYPE"
+            value = "PAPER"
+          }
+          env {
+            name  = "VERSION"
+            value = var.mc_version
           }
           volume_mount {
-            mount_path = "/data"
             name       = each.key
+            mount_path = "/data"
           }
           volume_mount {
-            mount_path = "/data/spigot.yml"
-            sub_path   = "spigot.yml"
             name       = "paper-config-volume"
+            sub_path   = "spigot.yml"
+            mount_path = "/data/spigot.yml"
           }
           volume_mount {
             name       = "paper-essentials-volume"
@@ -183,9 +199,9 @@ resource "kubernetes_deployment" "paper_servers" {
           }
         }
         volume {
-          name = "whitelist-volume"
-          config_map {
-            name = "whitelist-configmap"
+          name = each.key
+          persistent_volume_claim {
+            claim_name = each.key
           }
         }
         volume {
@@ -195,21 +211,21 @@ resource "kubernetes_deployment" "paper_servers" {
           }
         }
         volume {
-          name = "paper-luckperms-volume"
-          config_map {
-            name = "${each.key}-luckperms-configmap"
-          }
-        }
-        volume {
           name = "paper-essentials-volume"
           config_map {
             name = "paper-essentials-configmap"
           }
         }
         volume {
-          name = each.key
-          persistent_volume_claim {
-            claim_name = each.key
+          name = "paper-luckperms-volume"
+          config_map {
+            name = "${each.key}-luckperms-configmap"
+          }
+        }
+        volume {
+          name = "whitelist-volume"
+          config_map {
+            name = "whitelist-configmap"
           }
         }
       }
@@ -259,6 +275,12 @@ resource "kubernetes_deployment" "fabric_servers" {
             initial_delay_seconds = "60"
             period_seconds        = "5"
           }
+          resources {
+            requests = {
+              cpu    = "1"
+              memory = var.fabric_config[each.key]["MEMORY"]
+            }
+          }
           dynamic "env" {
             for_each = var.fabric_config[each.key]
             content {
@@ -267,20 +289,24 @@ resource "kubernetes_deployment" "fabric_servers" {
             }
           }
           env {
-            name  = "TYPE"
-            value = "FABRIC"
-          }
-          env {
-            name  = "VERSION"
-            value = var.mc_version
-          }
-          env {
             name  = "ENABLE_WHITELIST"
+            value = "true"
+          }
+          env {
+            name = "EULA"
             value = "true"
           }
           env {
             name  = "OPS"
             value = var.mc_ops
+          }
+          env {
+            name = "OVERRIDE_SERVER_PROPERTIES"
+            value = "true"
+          }
+          env {
+            name = "PLUGINS_SYNC_UPDATE"
+            value = "false"
           }
           env {
             name  = "REMOVE_OLD_MODS"
@@ -290,15 +316,17 @@ resource "kubernetes_deployment" "fabric_servers" {
             name  = "REMOVE_OLD_MODS_INCLUDE"
             value = "*.jar"
           }
-          resources {
-            requests = {
-              cpu    = "1"
-              memory = var.fabric_config[each.key]["MEMORY"]
-            }
+          env {
+            name  = "TYPE"
+            value = "FABRIC"
+          }
+          env {
+            name  = "VERSION"
+            value = var.mc_version
           }
           volume_mount {
-            mount_path = "/data"
             name       = each.key
+            mount_path = "/data"
           }
           volume_mount {
             name       = "fabric-config-volume"
@@ -312,9 +340,9 @@ resource "kubernetes_deployment" "fabric_servers" {
           }
         }
         volume {
-          name = "whitelist-volume"
-          config_map {
-            name = "whitelist-configmap"
+          name = each.key
+          persistent_volume_claim {
+            claim_name = each.key
           }
         }
         volume {
@@ -324,9 +352,9 @@ resource "kubernetes_deployment" "fabric_servers" {
           }
         }
         volume {
-          name = each.key
-          persistent_volume_claim {
-            claim_name = each.key
+          name = "whitelist-volume"
+          config_map {
+            name = "whitelist-configmap"
           }
         }
       }
@@ -377,6 +405,12 @@ resource "kubernetes_deployment" "ftb_servers" {
             initial_delay_seconds = "240"
             period_seconds        = "5"
           }
+          resources {
+            requests = {
+              cpu    = "1"
+              memory = var.ftb_config[each.key]["MEMORY"]
+            }
+          }
           dynamic "env" {
             for_each = var.ftb_config[each.key]
             content {
@@ -385,27 +419,33 @@ resource "kubernetes_deployment" "ftb_servers" {
             }
           }
           env {
-            name = "TYPE"
-            #value = "FTBA"
-            value = "CURSEFORGE"
+            name  = "ENABLE_WHITELIST"
+            value = "true"
           }
           env {
-            name  = "ENABLE_WHITELIST"
+            name = "EULA"
             value = "true"
           }
           env {
             name  = "OPS"
             value = var.mc_ops
           }
-          resources {
-            requests = {
-              cpu    = "1"
-              memory = var.ftb_config[each.key]["MEMORY"]
-            }
+          env {
+            name = "OVERRIDE_SERVER_PROPERTIES"
+            value = "true"
+          }
+          env {
+            name = "PLUGINS_SYNC_UPDATE"
+            value = "false"
+          }
+          env {
+            name = "TYPE"
+            #value = "FTBA"
+            value = "CURSEFORGE"
           }
           volume_mount {
-            mount_path = "/data"
             name       = each.key
+            mount_path = "/data"
           }
           # volume_mount {
           #   name       = "ftb-config-volume"
@@ -419,9 +459,9 @@ resource "kubernetes_deployment" "ftb_servers" {
           }
         }
         volume {
-          name = "whitelist-volume"
-          config_map {
-            name = "whitelist-configmap"
+          name = each.key
+          persistent_volume_claim {
+            claim_name = each.key
           }
         }
         # volume {
@@ -431,9 +471,9 @@ resource "kubernetes_deployment" "ftb_servers" {
         #   }
         # }
         volume {
-          name = each.key
-          persistent_volume_claim {
-            claim_name = each.key
+          name = "whitelist-volume"
+          config_map {
+            name = "whitelist-configmap"
           }
         }
       }
@@ -451,16 +491,16 @@ resource "kubernetes_service" "mc_servers" {
     selector = {
       id = each.key
     }
-    type = length(merge(var.fabric_config, var.paper_config, var.ftb_config)) == 1 ? "LoadBalancer" : null
+    type = local.server_count == 1 ? "LoadBalancer" : null
     port {
-      port        = length(merge(var.fabric_config, var.paper_config, var.ftb_config)) == 1 ? var.mc_connection_port : 25565
+      port        = local.server_count == 1 ? var.mc_connection_port : 25565
       target_port = 25565
     }
   }
 }
 
 resource "kubernetes_deployment" "velocity_proxy" {
-  count = length(merge(var.fabric_config, var.paper_config, var.ftb_config)) > 1 && var.proxy_type == "VELOCITY" ? 1 : 0
+  count = local.server_count > 1 && var.proxy_type == "VELOCITY" ? 1 : 0
   metadata {
     name      = "velocity-proxy"
     namespace = var.server_name
@@ -527,7 +567,7 @@ resource "kubernetes_deployment" "velocity_proxy" {
 }
 
 resource "kubernetes_deployment" "waterfall_proxy" {
-  count = length(merge(var.fabric_config, var.paper_config, var.ftb_config)) > 1 && (var.proxy_type == "WATERFALL" || var.proxy_type == "BUNGEECORD") ? 1 : 0
+  count = local.server_count > 1 && (var.proxy_type == "WATERFALL" || var.proxy_type == "BUNGEECORD") ? 1 : 0
   metadata {
     name      = "waterfall-proxy"
     namespace = var.server_name
@@ -594,7 +634,7 @@ resource "kubernetes_deployment" "waterfall_proxy" {
 }
 
 resource "kubernetes_service" "mc_proxy" {
-  count = length(merge(var.fabric_config, var.paper_config, var.ftb_config)) > 1 ? 1 : 0
+  count = local.server_count > 1 ? 1 : 0
 
   metadata {
     name      = "mc-proxy"
