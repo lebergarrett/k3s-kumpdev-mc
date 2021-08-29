@@ -79,12 +79,12 @@ resource "kubernetes_config_map" "fabric_servers" {
 # }
 
 resource "random_password" "velocity_secret" {
-  count  = length(merge(var.fabric_config, var.paper_config, var.ftb_config)) > 1 && var.proxy_type == "VELOCITY" ? 1 : 0
+  count  = local.server_count > 1 && var.proxy_type == "VELOCITY" ? 1 : 0
   length = 16
 }
 
 resource "kubernetes_config_map" "velocity_proxy" {
-  count = length(merge(var.fabric_config, var.paper_config, var.ftb_config)) > 1 && var.proxy_type == "VELOCITY" ? 1 : 0
+  count = local.server_count > 1 && var.proxy_type == "VELOCITY" ? 1 : 0
   metadata {
     name      = "velocity-proxy-configmap"
     namespace = var.server_name
@@ -99,7 +99,7 @@ resource "kubernetes_config_map" "velocity_proxy" {
 }
 
 resource "kubernetes_config_map" "bungee_waterfall_proxy" {
-  count = length(merge(var.fabric_config, var.paper_config, var.ftb_config)) > 1 && var.proxy_type == "WATERFALL" ? 1 : 0
+  count = local.server_count > 1 && var.proxy_type == "WATERFALL" ? 1 : 0
   metadata {
     name      = "bungee-waterfall-proxy-configmap"
     namespace = var.server_name
