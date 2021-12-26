@@ -105,7 +105,7 @@ resource "kubernetes_deployment" "paper_servers" {
       spec {
         container {
           name              = each.key
-          image             = "imkumpy/paper-mc:main"
+          image             = "imkumpy/paper-mc:${var.image_tag}"
           image_pull_policy = "Always"
           port {
             container_port = 25565
@@ -256,7 +256,7 @@ resource "kubernetes_deployment" "fabric_servers" {
       spec {
         container {
           name              = each.key
-          image             = "imkumpy/fabric-mc:main"
+          image             = "imkumpy/fabric-mc:${var.image_tag}"
           image_pull_policy = "Always"
           port {
             container_port = 25565
@@ -329,9 +329,14 @@ resource "kubernetes_deployment" "fabric_servers" {
             mount_path = "/data"
           }
           volume_mount {
-            name       = "fabric-config-volume"
+            name       = "fabricproxy-config-volume"
             sub_path   = "FabricProxy.toml"
             mount_path = "/config/FabricProxy.toml"
+          }
+          volume_mount {
+            name       = "fabricproxy-lite-config-volume"
+            sub_path   = "FabricProxy-Lite.toml"
+            mount_path = "/config/FabricProxy-Lite.toml"
           }
           volume_mount {
             name       = "whitelist-volume"
@@ -346,9 +351,15 @@ resource "kubernetes_deployment" "fabric_servers" {
           }
         }
         volume {
-          name = "fabric-config-volume"
+          name = "fabricproxy-config-volume"
           config_map {
-            name = "fabric-servers-configmap"
+            name = "fabricproxy-configmap"
+          }
+        }
+        volume {
+          name = "fabricproxy-lite-config-volume"
+          config_map {
+            name = "fabricproxy-lite-configmap"
           }
         }
         volume {
@@ -386,7 +397,7 @@ resource "kubernetes_deployment" "ftb_servers" {
         container {
           name = each.key
           #image             = "itzg/minecraft-server:java8-multiarch"
-          image             = "imkumpy/ftb-fabric-mc:main"
+          image             = "imkumpy/ftb-fabric-mc:${var.image_tag}"
           image_pull_policy = "Always"
           port {
             container_port = 25565
@@ -520,7 +531,7 @@ resource "kubernetes_deployment" "velocity_proxy" {
       }
       spec {
         container {
-          image             = "imkumpy/waterfall-mc:main"
+          image             = "imkumpy/waterfall-mc:${var.image_tag}"
           name              = "mc-proxy"
           image_pull_policy = "Always"
           port {
@@ -587,7 +598,7 @@ resource "kubernetes_deployment" "waterfall_proxy" {
       }
       spec {
         container {
-          image             = "imkumpy/waterfall-mc:main"
+          image             = "imkumpy/waterfall-mc:${var.image_tag}"
           name              = "mc-proxy"
           image_pull_policy = "Always"
           port {

@@ -32,6 +32,11 @@ variable "mc_version" {
   type        = string
 }
 
+variable "image_tag" {
+  description = "tag for my personal mc images"
+  type        = string
+}
+
 variable "paper_config" {
   description = "env vars for the vanilla server"
   type        = map(map(string))

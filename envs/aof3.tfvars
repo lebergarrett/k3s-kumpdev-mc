@@ -4,6 +4,7 @@ server_name = "aof3-mc-kumpdev"
 mc_connection_port = "25566"
 mc_version         = "1.16.4"
 mc_ops             = "Kumpy,Fett32"
+image_tag          = "main"
 
 server = {
   CF_BASE_DIR      = "/data"

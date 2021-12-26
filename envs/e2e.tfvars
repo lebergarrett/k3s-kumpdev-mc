@@ -4,6 +4,7 @@ server_name = "e2e-mc-kumpdev"
 mc_connection_port = "25567"
 mc_version         = "1.12.2"
 mc_ops             = "Kumpy,Fett32"
+image_tag          = "main"
 
 ftb_config = {
   e2e = {
