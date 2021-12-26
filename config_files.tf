@@ -54,14 +54,28 @@ resource "kubernetes_config_map" "paper_luckperms" {
   }
 }
 
-resource "kubernetes_config_map" "fabric_servers" {
+resource "kubernetes_config_map" "fabricproxy" {
   count = length(var.fabric_config) > 0 ? 1 : 0
   metadata {
-    name      = "fabric-servers-configmap"
+    name      = "fabricproxy-configmap"
     namespace = var.server_name
   }
   data = {
     "FabricProxy.toml" = templatefile("${path.root}/templates/FabricProxy.tpl", {
+      forwarding_secret = var.proxy_type == "VELOCITY" ? random_password.velocity_secret[0].result : ""
+      proxy_type        = var.proxy_type
+    })
+  }
+}
+
+resource "kubernetes_config_map" "fabricproxy_lite" {
+  count = length(var.fabric_config) > 0 ? 1 : 0
+  metadata {
+    name      = "fabricproxy-lite-configmap"
+    namespace = var.server_name
+  }
+  data = {
+    "FabricProxy-Lite.toml" = templatefile("${path.root}/templates/FabricProxy-Lite.tpl", {
       forwarding_secret = var.proxy_type == "VELOCITY" ? random_password.velocity_secret[0].result : ""
       proxy_type        = var.proxy_type
     })
