@@ -179,8 +179,8 @@ resource "kubernetes_deployment" "paper_servers" {
           }
           volume_mount {
             name       = "paper-config-volume"
-            sub_path   = "spigot.yml"
-            mount_path = "/data/spigot.yml"
+            sub_path   = "paper.yml"
+            mount_path = "/data/paper.yml"
           }
           volume_mount {
             name       = "paper-essentials-volume"
@@ -191,6 +191,11 @@ resource "kubernetes_deployment" "paper_servers" {
             name       = "paper-luckperms-volume"
             sub_path   = "config.yml"
             mount_path = "/data/plugins/LuckPerms/config.yml"
+          }
+          volume_mount {
+            name       = "spigot-config-volume"
+            sub_path   = "spigot.yml"
+            mount_path = "/data/spigot.yml"
           }
           volume_mount {
             name       = "whitelist-volume"
@@ -220,6 +225,12 @@ resource "kubernetes_deployment" "paper_servers" {
           name = "paper-luckperms-volume"
           config_map {
             name = "${each.key}-luckperms-configmap"
+          }
+        }
+        volume {
+          name = "spigot-config-volume"
+          config_map {
+            name = "spigot-configmap"
           }
         }
         volume {

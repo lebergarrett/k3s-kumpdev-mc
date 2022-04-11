@@ -8,6 +8,18 @@ resource "kubernetes_config_map" "whitelist" {
   }
 }
 
+resource "kubernetes_config_map" "spigot_config" {
+  count = length(var.paper_config) > 0 ? 1 : 0
+  metadata {
+    name      = "spigot-configmap"
+    namespace = var.server_name
+  }
+  data = {
+    "spigot.yml" = templatefile("${path.root}/templates/spigot.tpl", {
+      proxy_type = var.proxy_type
+    })
+  }
+}
 
 resource "kubernetes_config_map" "paper_config" {
   count = length(var.paper_config) > 0 ? 1 : 0
@@ -16,9 +28,6 @@ resource "kubernetes_config_map" "paper_config" {
     namespace = var.server_name
   }
   data = {
-    "spigot.yml" = templatefile("${path.root}/templates/spigot.tpl", {
-      proxy_type = var.proxy_type
-    })
     "paper.yml" = templatefile("${path.root}/templates/paper.tpl", {
       forwarding_secret = var.proxy_type == "VELOCITY" ? random_password.velocity_secret[0].result : ""
       proxy_type        = var.proxy_type
