@@ -418,14 +418,14 @@ resource "kubernetes_deployment" "ftb_servers" {
               command = ["mcstatus", "localhost", "ping"]
             }
             initial_delay_seconds = "240"
-            period_seconds        = "5"
+            period_seconds        = "30"
           }
           liveness_probe {
             exec {
               command = ["mcstatus", "localhost", "ping"]
             }
             initial_delay_seconds = "240"
-            period_seconds        = "5"
+            period_seconds        = "30"
           }
           resources {
             requests = {
