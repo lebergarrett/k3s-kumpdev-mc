@@ -1,12 +1,12 @@
-server_name = "crucial2"
+namespace = "crucial2-mc"
 
-# Minecraft Vars
-mc_connection_port = "25568"
+# General Minecraft Vars
+mc_connection_port = 25568
 mc_version         = "1.16.5"
 mc_ops             = "Kumpy,Fett32"
 image_tag          = "crucial2"
 
-ftb_config = {
+curseforge_config = {
   crucial2 = {
     CF_BASE_DIR      = "/data"
     CF_SERVER_MOD    = "/modpacks/Crucial2-1.4.2-server.zip"

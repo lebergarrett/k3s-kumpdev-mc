@@ -1,12 +1,12 @@
-server_name = "enigmatica6-mc"
+namespace = "enigmatica6-mc"
 
-# Minecraft Vars
-mc_connection_port = "25567"
+# General Minecraft Vars
+mc_connection_port = 25567
 mc_version         = "1.16.5"
 mc_ops             = "Kumpy,Fett32"
 image_tag          = "main"
 
-ftb_config = {
+curseforge_config = {
   enigmatica6 = {
     CF_BASE_DIR      = "/data"
     CF_SERVER_MOD    = "/modpacks/Enigmatica6Server-1.1.2.zip"

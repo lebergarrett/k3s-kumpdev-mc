@@ -1,4 +1,4 @@
-server_name = "e2e-mc-kumpdev"
+namespace = "e2e-mc"
 
 # Minecraft Vars
 mc_connection_port = "25567"
@@ -6,7 +6,7 @@ mc_version         = "1.12.2"
 mc_ops             = "Kumpy,Fett32"
 image_tag          = "main"
 
-ftb_config = {
+curseforge_config = {
   e2e = {
     CF_BASE_DIR      = "/data"
     CF_SERVER_MOD    = "/modpacks/Enigmatica2ExpertServer-1.82a.zip"

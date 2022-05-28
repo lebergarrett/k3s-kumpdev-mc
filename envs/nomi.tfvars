@@ -1,12 +1,12 @@
-server_name = "nomi"
+namespace = "nomi"
 
-# Minecraft Vars
-mc_connection_port = "25567"
+# General Minecraft Vars
+mc_connection_port = 25567
 mc_version         = "1.12.2"
 mc_ops             = "Kumpy,Fett32"
 image_tag          = "nomi"
 
-ftb_config = {
+curseforge_config = {
   nomi = {
     CF_BASE_DIR      = "/data"
     CF_SERVER_MOD    = "/modpacks/nomifactory-v1.2.2.1-server.zip"
