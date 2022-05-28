@@ -1,7 +1,7 @@
 namespace = "e2e-mc"
 
-# Minecraft Vars
-mc_connection_port = "25567"
+# General Minecraft Vars
+mc_connection_port = 25567
 mc_version         = "1.12.2"
 mc_ops             = "Kumpy,Fett32"
 image_tag          = "main"
