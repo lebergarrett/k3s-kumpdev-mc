@@ -74,9 +74,11 @@ variable "namespace" {
 variable "MARIADB_USER" {
   description = "User for database that stores luckperms info (paper servers)"
   type        = string
+  sensitive   = true
 }
 
 variable "MARIADB_PASS" {
   description = "Password for database that stores luckperms info (paper servers)"
   type        = string
+  sensitive   = true
 }
