@@ -48,6 +48,7 @@ module "paper_servers" {
       sub_path   = "whitelist.json"
     }
   }
+  depends_on = [kubernetes_deployment.luckperms_mariadb]
 }
 
 module "fabric_servers" {

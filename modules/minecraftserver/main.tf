@@ -53,8 +53,7 @@ resource "kubernetes_deployment" "_" {
           }
           resources {
             limits = {
-              cpu    = var.cpu_limit
-              memory = try(var.env_variables["MEMORY"], "1G")
+              cpu = var.cpu_limit
             }
           }
           dynamic "env" {
@@ -100,8 +99,8 @@ resource "kubernetes_deployment" "_" {
             for_each = var.config_map_mounts
             content {
               name       = volume_mount.key
-              mount_path = volume_mount.mount_path
-              sub_path   = volume_mount.sub_path
+              mount_path = volume_mount.value.mount_path
+              sub_path   = volume_mount.value.sub_path
             }
           }
         }
@@ -115,11 +114,8 @@ resource "kubernetes_deployment" "_" {
           for_each = var.config_maps
           content {
             name = volume.key
-            dynamic "config_map" {
-              for_each = volume.value
-              content {
-                name = volume
-              }
+            config_map {
+              name = volume.value
             }
           }
         }
