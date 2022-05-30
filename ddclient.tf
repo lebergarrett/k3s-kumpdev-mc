@@ -2,7 +2,7 @@ resource "kubernetes_deployment" "ddns" {
   count = var.enable_ddns == true ? 1 : 0
   metadata {
     name      = "ddns-ddclient"
-    namespace = var.server_name
+    namespace = var.namespace
   }
   spec {
     replicas = 1
@@ -31,7 +31,7 @@ resource "kubernetes_deployment" "ddns" {
           }
           env {
             name  = "TZ"
-            value = "America/Los_Angeles"
+            value = "America/New_York"
           }
           volume_mount {
             name       = "ddns-ddclient-volume"

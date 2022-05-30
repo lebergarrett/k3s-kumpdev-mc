@@ -1,7 +1,7 @@
-server_name = "aof3-mc-kumpdev"
+namespace = "aof3-mc"
 
-# Minecraft Vars
-mc_connection_port = "25566"
+# General Minecraft Vars
+mc_connection_port = 25566
 mc_version         = "1.16.4"
 mc_ops             = "Kumpy,Fett32"
 image_tag          = "main"

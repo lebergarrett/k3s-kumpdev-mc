@@ -1,4 +1,4 @@
-server_name = "dev-mc-kumpdev"
+namespace = "dev-mc"
 
 enable_ddns = true
 
@@ -8,10 +8,9 @@ proxy_motd            = "&2Kumpdev &l&7is a server network powered by Kubernetes
 proxy_priority_server = "fabric"
 
 # Minecraft Vars
-mc_connection_port = "25565"
-mc_version         = "1.18.1"
-mc_ops             = "Kumpy,Fett32"
-image_tag          = "1.18"
+mc_version = "1.18.2"
+mc_ops     = "Kumpy,Fett32"
+image_tag  = "main"
 
 paper_config = {
   creative = {
@@ -55,4 +54,4 @@ fabric_config = {
   }
 }
 
-ftb_config = {}
+curseforge_config = {}
