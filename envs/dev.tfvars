@@ -8,9 +8,9 @@ proxy_motd            = "&2Kumpdev &l&7is a server network powered by Kubernetes
 proxy_priority_server = "fabric"
 
 # Minecraft Vars
-mc_version = "1.18.1"
+mc_version = "1.18.2"
 mc_ops     = "Kumpy,Fett32"
-image_tag  = "1.18"
+image_tag  = "main"
 
 paper_config = {
   creative = {
