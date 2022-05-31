@@ -9,6 +9,9 @@ resource "kubernetes_deployment" "_" {
   }
   spec {
     replicas = 1
+    strategy {
+      type = "Recreate"
+    }
     selector {
       match_labels = {
         app = "minecraft"
@@ -54,6 +57,9 @@ resource "kubernetes_deployment" "_" {
           resources {
             limits = {
               cpu = var.cpu_limit
+            }
+            requests = {
+              cpu = "200m"
             }
           }
           dynamic "env" {

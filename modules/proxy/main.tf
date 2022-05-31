@@ -10,6 +10,10 @@ resource "kubernetes_deployment" "velocity" {
   }
   spec {
     replicas = 1
+    strategy {
+      type = "Recreate"
+    }
+
     selector {
       match_labels = {
         app = "mc-proxy"
@@ -53,6 +57,10 @@ resource "kubernetes_deployment" "velocity" {
             limits = {
               cpu    = var.cpu_limit
               memory = var.mem_limit
+            }
+            requests = {
+              cpu    = "200m"
+              memory = "256M"
             }
           }
           env {
