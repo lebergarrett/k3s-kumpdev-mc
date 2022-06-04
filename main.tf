@@ -63,6 +63,7 @@ module "fabric_servers" {
   image          = "imkumpy/fabric-mc:${var.image_tag}"
   proxy_enable   = local.server_count > 1 ? true : false
   namespace      = var.namespace
+  cpu_limit      = 2
   env_variables = merge({
     "REMOVE_OLD_MODS"          = "true"
     "REMOVE_OLD_MODES_INCLUDE" = "*.jar"
