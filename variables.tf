@@ -82,3 +82,9 @@ variable "MARIADB_PASS" {
   type        = string
   sensitive   = true
 }
+
+variable "vanilla_config" {
+  description = "env vars for the vanilla server"
+  type        = map(map(string))
+  default     = {}
+}

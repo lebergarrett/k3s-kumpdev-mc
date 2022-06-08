@@ -15,8 +15,8 @@ module "paper_servers" {
   proxy_enable   = local.server_count > 1 ? true : false
   namespace      = var.namespace
   env_variables = merge({
-    "REMOVE_OLD_MODS"          = "true"
-    "REMOVE_OLD_MODES_INCLUDE" = "*.jar"
+    "REMOVE_OLD_MODS"         = "true"
+    "REMOVE_OLD_MODS_INCLUDE" = "*.jar"
   }, each.value)
 
   config_maps = {
@@ -65,8 +65,8 @@ module "fabric_servers" {
   namespace      = var.namespace
   cpu_limit      = 2
   env_variables = merge({
-    "REMOVE_OLD_MODS"          = "true"
-    "REMOVE_OLD_MODES_INCLUDE" = "*.jar"
+    "REMOVE_OLD_MODS"         = "true"
+    "REMOVE_OLD_MODS_INCLUDE" = "*.jar"
   }, each.value)
 
   config_maps = {
@@ -102,6 +102,32 @@ module "curseforge_servers" {
   image          = "imkumpy/ftb-fabric-mc:${var.image_tag}"
   proxy_enable   = local.server_count > 1 ? true : false
   namespace      = var.namespace
+  env_variables  = each.value
+
+  config_maps = {
+    whitelist-volume = "whitelist-configmap"
+  }
+  config_map_mounts = {
+    whitelist-volume = {
+      mount_path = "/data/whitelist.json"
+      sub_path   = "whitelist.json"
+    }
+  }
+}
+
+module "vanilla_servers" {
+  for_each = var.vanilla_config
+  source   = "./modules/minecraftserver"
+
+  server_name    = each.key
+  server_type    = "VANILLA"
+  server_version = var.mc_version
+  server_ops     = var.mc_ops
+  server_port    = var.mc_connection_port
+  image          = "itzg/minecraft-server:${var.image_tag}"
+  proxy_enable   = false
+  namespace      = var.namespace
+  cpu_limit      = 2
   env_variables  = each.value
 
   config_maps = {
